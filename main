@@ -35,7 +35,7 @@ time singularity run -e docker://pennbbl/qsiprep:0.6.4 \
     --bids_dir input \
     --output_dir . \
     --analysis_level participant \
-    --output_resolution 2.0 \
+    --output_resolution $(jq -r .output_resolution config.json) \
     --fs-license-file license.txt \
     -w work
 
