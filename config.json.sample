@@ -1,0 +1,22 @@
+{
+    "t1": "testdata/t1.nii.gz",
+    "dwi": "testdata/dwi.nii.gz",
+    "bvecs": "testdata/dwi.bvecs",
+    "bvals": "testdata/dwi.bvals",
+    "_inputs": [
+        {
+            "id": "t1",
+            "meta": {
+                "subject": "01",
+                "session": "mri"
+            }
+        },
+        {
+            "id": "dwi",
+            "meta": {
+                "subject": "01",
+                "session": "mri"
+            }
+        }
+    ]
+}

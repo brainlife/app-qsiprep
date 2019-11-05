@@ -1,0 +1,37 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=8,vmem=31gb,walltime=8:00:00
+#PBS -N qsiprep
+
+subject=none
+
+#construct bids structure
+mkdir -p input/sub-${subject}/anat
+mkdir -p input/sub-${subject}/dwi
+
+#create dataset_descrition.json
+cat <<EOF >input/dataset_description.json
+{
+    "BIDSVersion": "1.0",
+    "Name": "qsiprep input"
+}
+EOF
+
+cp $(jq -r .t1 config.json) input/sub-${subject}/anat/sub-${subject}_T1w.nii.gz
+cp $(jq -r .dwi config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.nii.gz
+cp $(jq -r .bvecs config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.bvec
+cp $(jq -r .bvals config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.bval
+
+#use metadata to reconstruct sidecars
+jq '._inputs[] | select(.id == "t1").meta' config.json > input/sub-${subject}/anat/sub-${subject}_T1w.json
+jq '._inputs[] | select(.id == "dwi").meta' config.json > input/sub-${subject}/dwi/sub-${subject}_dwi.json
+
+#run qsiprep
+time singularity run -e docker://pennbbl/qsiprep:0.6.4 \
+    --bids_dir input \
+    --output_dir output \
+    --analysis_level participant \
+    -w work
+
+#organize output
+#TODO..
+
