@@ -2,13 +2,15 @@
 #PBS -l nodes=1:ppn=8,vmem=31gb,walltime=8:00:00
 #PBS -N qsiprep
 
-subject=none
+set -e
+set -x
+
+subject=$(jq -r '._inputs[0].meta.subject' config.json) 
 
 #construct bids structure
 mkdir -p input/sub-${subject}/anat
 mkdir -p input/sub-${subject}/dwi
 
-#create dataset_descrition.json
 cat <<EOF >input/dataset_description.json
 {
     "BIDSVersion": "1.0",
@@ -25,11 +27,16 @@ cp $(jq -r .bvals config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.bval
 jq '._inputs[] | select(.id == "t1").meta' config.json > input/sub-${subject}/anat/sub-${subject}_T1w.json
 jq '._inputs[] | select(.id == "dwi").meta' config.json > input/sub-${subject}/dwi/sub-${subject}_dwi.json
 
+[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+echo $FREESURFER_LICENSE > license.txt
+
 #run qsiprep
 time singularity run -e docker://pennbbl/qsiprep:0.6.4 \
     --bids_dir input \
     --output_dir output \
     --analysis_level participant \
+    --output_resolution 2.0 \
+    --fs-license-file license.txt \
     -w work
 
 #organize output
