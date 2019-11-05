@@ -44,7 +44,7 @@ mkdir -p output_anat_preproc
 cp qsiprep/sub-*/anat/sub-*_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz
 
 mkdir -p output_dseg
-cp qsiprep/sub-*/anat/sub-*_dseg.nii.gz output_dseg/park.nii.gz
+cp qsiprep/sub-*/anat/sub-*_dseg.nii.gz output_dseg/parc.nii.gz
 cp dseg.key.txt output_dseg/key.txt
 cp dseg.label.json output_dseg/label.json
 
