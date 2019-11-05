@@ -3,3 +3,6 @@ testdata
 input
 output
 license.txt
+output_*
+qsiprep
+work

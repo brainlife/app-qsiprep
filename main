@@ -33,12 +33,41 @@ echo $FREESURFER_LICENSE > license.txt
 #run qsiprep
 time singularity run -e docker://pennbbl/qsiprep:0.6.4 \
     --bids_dir input \
-    --output_dir output \
+    --output_dir . \
     --analysis_level participant \
     --output_resolution 2.0 \
     --fs-license-file license.txt \
     -w work
 
 #organize output
-#TODO..
+mkdir -p output_anat_preproc
+cp qsiprep/sub-*/anat/sub-*_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz
+
+mkdir -p output_dseg
+cp qsiprep/sub-*/anat/sub-*_dseg.nii.gz output_dseg/park.nii.gz
+cp dseg.key.txt output_dseg/key.txt
+cp dseg.label.json output_dseg/label.json
+
+mkdir -p output_brainmask
+cp qsiprep/sub-*/anat/sub-*_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
+
+#TODO anat/sub-9002_label-CSF_probseg.nii.gz
+#TODO anat/sub-9002_label-GM_probseg.nii.gz
+#TODO anat/sub-9002_label-WM_probseg.nii.gz
+
+mkdir -p output_dwi
+cp qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
+cp qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
+cp qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
+
+#sub-9002_confounds.tsv
+#sub-9002_space-T1w_desc-eddy_cnr.nii.gz
+#sub-9002_space-T1w_b0series.nii.gz
+#sub-9002_space-T1w_dwiref.nii.gz
+#sub-9002_space-T1w_desc-brain_mask.nii.gz
+
+mkdir -p output_figures/images
+cp qsiprep/sub-*/figures/* output_figures/images
+cp figures.images.json output_figures/images.json
+
 
