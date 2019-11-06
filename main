@@ -5,7 +5,11 @@
 set -e
 set -x
 
-subject=$(jq -r '._inputs[0].meta.subject' config.json) 
+#subject=$(jq -r '._inputs[0].meta.subject' config.json) 
+
+#BL subject ID is more generic than BIDS subject ID (like.. "1_0001" which is invalid in BIDS)
+#let's override it with "brainlife"
+subject=brainlife
 
 #construct bids structure
 mkdir -p input/sub-${subject}/anat
@@ -24,11 +28,13 @@ cp $(jq -r .bvecs config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.bvec
 cp $(jq -r .bvals config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.bval
 
 #use metadata to reconstruct sidecars
-jq '._inputs[] | select(.id == "t1").meta' config.json > input/sub-${subject}/anat/sub-${subject}_T1w.json
-jq '._inputs[] | select(.id == "dwi").meta' config.json > input/sub-${subject}/dwi/sub-${subject}_dwi.json
+jq '._inputs[] | select(.id == "t1").meta' config.json | jq -r '.subject="'$subject'"' > input/sub-${subject}/anat/sub-${subject}_T1w.json
+jq '._inputs[] | select(.id == "dwi").meta' config.json | jq -r '.subject="'$subject'"' > input/sub-${subject}/dwi/sub-${subject}_dwi.json
 
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 echo $FREESURFER_LICENSE > license.txt
+
+exit
 
 #run qsiprep
 time singularity run -e docker://pennbbl/qsiprep:0.6.4 \
