@@ -1,77 +1,36 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=8,vmem=31gb,walltime=8:00:00
+#PBS -l nodes=1:ppn=8,walltime=9:00:00,vmem=14gb
 #PBS -N qsiprep
 
-set -e
 set -x
+set -e
 
-#subject=$(jq -r '._inputs[0].meta.subject' config.json) 
-
-#BL subject ID is more generic than BIDS subject ID (like.. "1_0001" which is invalid in BIDS)
-#let's override it with "brainlife"
-subject=brainlife
-
-#construct bids structure
-mkdir -p input/sub-${subject}/anat
-mkdir -p input/sub-${subject}/dwi
-
-cat <<EOF >input/dataset_description.json
-{
-    "BIDSVersion": "1.0",
-    "Name": "qsiprep input"
-}
-EOF
-
-cp $(jq -r .t1 config.json) input/sub-${subject}/anat/sub-${subject}_T1w.nii.gz
-cp $(jq -r .dwi config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.nii.gz
-cp $(jq -r .bvecs config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.bvec
-cp $(jq -r .bvals config.json) input/sub-${subject}/dwi/sub-${subject}_dwi.bval
-
-#use metadata to reconstruct sidecars
-jq '._inputs[] | select(.id == "t1").meta' config.json | jq -r '.subject="'$subject'"' > input/sub-${subject}/anat/sub-${subject}_T1w.json
-jq '._inputs[] | select(.id == "dwi").meta' config.json | jq -r '.subject="'$subject'"' > input/sub-${subject}/dwi/sub-${subject}_dwi.json
-
-[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+export FREESURFER_LICENSE="hayashis@iu.edu 29511 *CPmh9xvKQKHE FSg0ijTusqaQc"
 echo $FREESURFER_LICENSE > license.txt
 
-#run qsiprep
-time singularity run -e docker://pennbbl/qsiprep:0.6.4 \
-    --bids_dir input \
-    --output_dir . \
-    --analysis_level participant \
-    --output_resolution $(jq -r .output_resolution config.json) \
+bl2bids
+
+WORKDIRNAME=qsipworkdir
+outdir=output
+
+resolution=$(jq -r .resolution config.json)
+
+skipbidsvalidation=""
+[ "$(jq -r .skipbidsvalidation config.json)" == "true" ] && skipbidsvalidation="--skip-bids-validation"
+
+# remove if stuff already exists
+rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
+rm -rf $outdir && mkdir -p $outdir
+
+# set FreeSurfer
+[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+
+time singularity exec -e \
+    docker://pennbbl/qsiprep:0.13.0RC1 \
+    /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
-    -w work
-
-#organize output
-mkdir -p output_anat_preproc
-cp qsiprep/sub-*/anat/sub-*_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz
-
-mkdir -p output_dseg
-cp qsiprep/sub-*/anat/sub-*_dseg.nii.gz output_dseg/parc.nii.gz
-cp dseg.key.txt output_dseg/key.txt
-cp dseg.label.json output_dseg/label.json
-
-mkdir -p output_brainmask
-cp qsiprep/sub-*/anat/sub-*_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
-
-#TODO anat/sub-9002_label-CSF_probseg.nii.gz
-#TODO anat/sub-9002_label-GM_probseg.nii.gz
-#TODO anat/sub-9002_label-WM_probseg.nii.gz
-
-mkdir -p output_dwi
-cp qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
-cp qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
-cp qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
-
-#sub-9002_confounds.tsv
-#sub-9002_space-T1w_desc-eddy_cnr.nii.gz
-#sub-9002_space-T1w_b0series.nii.gz
-#sub-9002_space-T1w_dwiref.nii.gz
-#sub-9002_space-T1w_desc-brain_mask.nii.gz
-
-mkdir -p output_figures/images
-cp qsiprep/sub-*/figures/* output_figures/images
-cp figures.images.json output_figures/images.json
-
+    --output-resolution $resolution \
+    --work-dir=$WORKDIRNAME \
+    bids $outdir participant \
+    $skipbidsvalidation
 
