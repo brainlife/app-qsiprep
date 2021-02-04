@@ -48,10 +48,6 @@ cp dseg.label.json output_dseg/label.json
 mkdir -p output_brainmask
 cp $outdir/qsiprep/sub-*/ses-*/anat/sub-*_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
 
-#TODO anat/sub-9002_label-CSF_probseg.nii.gz
-#TODO anat/sub-9002_label-GM_probseg.nii.gz
-#TODO anat/sub-9002_label-WM_probseg.nii.gz
-
 mkdir -p output_dwi
 cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
 cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
@@ -60,4 +56,21 @@ cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bval output_
 mkdir -p output_figures/images
 cp $outdir/qsiprep/sub-*/figures/* output_figures/images
 cp figures.images.json output_figures/images.json
+
+#reportlets 
+mkdir -p output_report
+for html in $(cd reportlets && find ./ -name "*.html"); do
+    mkdir -p output_report/$(dirname $html)
+    cp reportlets/$html output_report/$html
+done
+
+for dir in $(cd reportlets && find ./ -name figures); do
+    mkdir -p output_report/$(dirname $dir)
+    cp -r reportlets/$dir output_report/$(dirname $dir)
+done
+
+#rename the parent directory to confirm to brainlife html output
+mv output_report/qsiprep output_report/html 
+
+echo "all done!"
 
