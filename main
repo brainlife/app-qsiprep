@@ -13,7 +13,9 @@ bl2bids
 WORKDIRNAME=qsipworkdir
 outdir=output
 
-resolution=$(jq -r .resolution config.json)
+resolution=$(jq -r .resolution config.json) 
+#sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
+sub=$(jq -r '._inputs[0].meta.subject' config.json)
 
 skipbidsvalidation=""
 [ "$(jq -r .skipbidsvalidation config.json)" == "true" ] && skipbidsvalidation="--skip-bids-validation"
@@ -33,4 +35,29 @@ time singularity exec -e \
     --work-dir=$WORKDIRNAME \
     bids $outdir participant \
     $skipbidsvalidation
+
+#organize output
+mkdir -p output_anat_preproc
+cp $outdir/qsiprep/sub-*/ses-*/anat/sub-*_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz
+
+mkdir -p output_dseg
+cp $outdir/qsiprep/sub-*/ses-*/anat/sub-*_dseg.nii.gz output_dseg/parc.nii.gz
+cp dseg.key.txt output_dseg/key.txt
+cp dseg.label.json output_dseg/label.json
+
+mkdir -p output_brainmask
+cp $outdir/qsiprep/sub-*/ses-*/anat/sub-*_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
+
+#TODO anat/sub-9002_label-CSF_probseg.nii.gz
+#TODO anat/sub-9002_label-GM_probseg.nii.gz
+#TODO anat/sub-9002_label-WM_probseg.nii.gz
+
+mkdir -p output_dwi
+cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
+cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
+cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
+
+mkdir -p output_figures/images
+cp $outdir/qsiprep/sub-*/figures/* output_figures/images
+cp figures.images.json output_figures/images.json
 
