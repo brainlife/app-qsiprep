@@ -13,7 +13,7 @@ bl2bids
 WORKDIRNAME=qsipworkdir
 outdir=output
 
-resolution=$(jq -r .resolution config.json) 
+resolution=$(jq -r .output_resolution config.json) 
 #sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
 
