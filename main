@@ -8,7 +8,7 @@ set -e
 export FREESURFER_LICENSE="hayashis@iu.edu 29511 *CPmh9xvKQKHE FSg0ijTusqaQc"
 echo $FREESURFER_LICENSE > license.txt
 
-#bl2bids
+bl2bids
 
 WORKDIRNAME=qsipworkdir
 outdir=output
