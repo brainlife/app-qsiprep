@@ -8,7 +8,7 @@ set -e
 export FREESURFER_LICENSE="hayashis@iu.edu 29511 *CPmh9xvKQKHE FSg0ijTusqaQc"
 echo $FREESURFER_LICENSE > license.txt
 
-bl2bids
+#bl2bids
 
 WORKDIRNAME=qsipworkdir
 outdir=output
@@ -16,15 +16,24 @@ outdir=output
 resolution=$(jq -r .output_resolution config.json) 
 #sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
+dwi=$(jq -r .dwi config.json)
+skipbidsvalidation=$(jq -r .skipbidsvalidation config.json)
+distortion_group_merge=$(jq -r .distortion_group_merge config.json)
 
-skipbidsvalidation=""
-[ "$(jq -r .skipbidsvalidation config.json)" == "true" ] && skipbidsvalidation="--skip-bids-validation"
+optional=""
+
+if [[ $dwi == *","* ]]; then 
+	echo "Multi dwi input found. Distortion group merge option: ${distortion_group_merge}"; 
+	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
+fi
+
+[ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
 
 # remove if stuff already exists
 rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
 rm -rf $outdir && mkdir -p $outdir
 
-# set FreeSurfer
+# set FreeSurferc
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
 time singularity exec -e \
@@ -33,29 +42,29 @@ time singularity exec -e \
     --fs-license-file license.txt \
     --output-resolution $resolution \
     --work-dir=$WORKDIRNAME \
-    bids $outdir participant \
-    $skipbidsvalidation
+    /N/u/gberto/Carbonate/work/tests/abcd-spec/hooks/bids $outdir participant \
+    $optional
 
 #organize output
 mkdir -p output_anat_preproc
-cp $outdir/qsiprep/sub-*/ses-*/anat/sub-*_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz
+cp $outdir/qsiprep/sub-${sub}/anat/sub-${sub}_desc-preproc_T1w.nii.gz ./output_anat_preproc/t1.nii.gz
 
 mkdir -p output_dseg
-cp $outdir/qsiprep/sub-*/ses-*/anat/sub-*_dseg.nii.gz output_dseg/parc.nii.gz
+cp $outdir/qsiprep/sub-${sub}/anat/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz
 cp dseg.key.txt output_dseg/key.txt
 cp dseg.label.json output_dseg/label.json
 
 mkdir -p output_brainmask
-cp $outdir/qsiprep/sub-*/ses-*/anat/sub-*_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
+cp $outdir/qsiprep/sub-${sub}/anat/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
 
 mkdir -p output_dwi
-cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
-cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
-cp $outdir/qsiprep/sub-*/ses-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
+cp $outdir/qsiprep/sub-${sub}/dwi/sub-${sub}_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
+cp $outdir/qsiprep/sub-${sub}/dwi/sub-${sub}_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
+cp $outdir/qsiprep/sub-${sub}/dwi/sub-${sub}_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
 
 mkdir -p output_figures/images
-cp $outdir/qsiprep/sub-*/figures/* output_figures/images
-cp figures.images.json output_figures/images.json
+#cp $outdir/qsiprep/sub-${sub}/figures/* output_figures/images
+#cp figures.images.json output_figures/images.json
 
 #reportlets 
 mkdir -p output_report
