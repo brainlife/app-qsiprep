@@ -41,7 +41,6 @@ time singularity exec -e \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
     --output-resolution $resolution \
-    --output-space T1w \
     --work-dir=$WORKDIRNAME \
     bids $outdir participant \
     $optional
