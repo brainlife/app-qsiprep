@@ -43,7 +43,7 @@ time singularity exec -e \
     --output-resolution $resolution \
     --output-space T1w \
     --work-dir=$WORKDIRNAME \
-    /N/u/gberto/Carbonate/work/tests/abcd-spec/hooks/bids $outdir participant \
+    bids $outdir participant \
     $optional
 
 #organize output
