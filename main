@@ -33,7 +33,7 @@ fi
 rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
 rm -rf $outdir && mkdir -p $outdir
 
-# set FreeSurferc
+# set FreeSurfer
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
 time singularity exec -e \
@@ -44,36 +44,36 @@ time singularity exec -e \
     --work-dir=$WORKDIRNAME \
     bids $outdir participant \
     $optional
-
+    
 #organize output
 mkdir -p output_anat_preproc
-cp $outdir/qsiprep/sub-${sub}/anat/sub-${sub}_desc-preproc_T1w.nii.gz ./output_anat_preproc/t1.nii.gz
+cp $outdir/qsiprep/sub-*/anat/sub-*_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz
 
 mkdir -p output_dseg
-cp $outdir/qsiprep/sub-${sub}/anat/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz
+cp $outdir/qsiprep/sub-*/anat/sub-*_dseg.nii.gz output_dseg/parc.nii.gz
 cp dseg.key.txt output_dseg/key.txt
 cp dseg.label.json output_dseg/label.json
 
 mkdir -p output_brainmask
-cp $outdir/qsiprep/sub-${sub}/anat/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
+cp $outdir/qsiprep/sub-*/anat/sub-*_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
 
 mkdir -p output_dwi
-cp $outdir/qsiprep/sub-${sub}/dwi/sub-${sub}_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
-cp $outdir/qsiprep/sub-${sub}/dwi/sub-${sub}_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
-cp $outdir/qsiprep/sub-${sub}/dwi/sub-${sub}_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
+cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
+cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
+cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
 
 mkdir -p output_figures/images
-#cp $outdir/qsiprep/sub-${sub}/figures/* output_figures/images
-#cp figures.images.json output_figures/images.json
+cp $outdir/qsiprep/sub-*/figures/* output_figures/images
+cp figures.images.json output_figures/images.json #TODO: rewrite with right content
 
 #reportlets 
 mkdir -p output_report
-for html in $(cd reportlets && find ./ -name "*.html"); do
+for html in $(cd $WORKDIRNAME/reportlets && find ./ -name "*.html"); do
     mkdir -p output_report/$(dirname $html)
     cp reportlets/$html output_report/$html
 done
 
-for dir in $(cd reportlets && find ./ -name figures); do
+for dir in $(cd $WORKDIRNAME/reportlets && find ./ -name figures); do
     mkdir -p output_report/$(dirname $dir)
     cp -r reportlets/$dir output_report/$(dirname $dir)
 done
@@ -82,4 +82,3 @@ done
 mv output_report/qsiprep output_report/html 
 
 echo "all done!"
-
