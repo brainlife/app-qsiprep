@@ -32,7 +32,7 @@ This app runs [QSIPrep](https://github.com/pennbbl/qsiprep) on the [brainlife.io
 
 ### On Brainlife.io
 
-Check out the brainlife app [here](https://doi.org/10.25663/brainlife.app.160)
+Check out the brainlife app [here](https://doi.org/10.25663/brainlife.app.246)
 
 ### Running Locally
 
