@@ -104,17 +104,17 @@ cat << EOF > product.json
         { 
             "type": "images", 
 	        "name": "brainmask",
-            "base64": "$(base64 -w 0 images/sub-${sub}_seg_brainmask.svg)"
+            "base64": "$(base64 -w 0 output_figures/images/sub-${sub}_seg_brainmask.svg)"
         },
         { 
             "type": "images", 
 	        "name": "coregistration",
-            "base64": "$(base64 -w 0 images/sub-${sub}_coreg.svg)"
+            "base64": "$(base64 -w 0 output_figures/images/sub-${sub}_coreg.svg)"
         },
         { 
             "type": "images", 
 	        "name": "sampling_scheme",
-            "base64": "$(base64 -w 0 images/sub-${sub}_sampling_scheme.gif)"
+            "base64": "$(base64 -w 0 output_figures/images/sub-${sub}_sampling_scheme.gif)"
         }
     ]
 }
