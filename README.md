@@ -44,7 +44,7 @@ A)
   {
     "t1": "./t1.nii.gz",
     "dwi": "./dwi.nii.gz",
-    "bvals: "./dwi.bvals",
+    "bvals": "./dwi.bvals",
     "bvecs": "./dwi.bvecs"
   }
   ```
