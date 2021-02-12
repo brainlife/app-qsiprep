@@ -97,4 +97,27 @@ done
 #rename the parent directory to confirm to brainlife html output
 mv output_report/qsiprep output_report/html 
 
+#store PSD plot on product.json
+cat << EOF > product.json
+{
+    "brainlife": [
+        { 
+            "type": "images", 
+	        "name": "brainmask",
+            "base64": "$(base64 -w 0 images/sub-${sub}_seg_brainmask.svg)"
+        },
+        { 
+            "type": "images", 
+	        "name": "coregistration",
+            "base64": "$(base64 -w 0 images/sub-${sub}_coreg.svg)"
+        },
+        { 
+            "type": "images", 
+	        "name": "sampling_scheme",
+            "base64": "$(base64 -w 0 images/sub-${sub}_sampling_scheme.gif)"
+        }
+    ]
+}
+EOF
+
 echo "all done!" 
