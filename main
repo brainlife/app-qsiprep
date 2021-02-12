@@ -19,7 +19,11 @@ space=$(jq -r .output_space config.json)
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
 dwi=$(jq -r .dwi config.json)
 skipbidsvalidation=$(jq -r .skipbidsvalidation config.json)
+denoise_method=$(jq -r .denoise_method config.json)
 distortion_group_merge=$(jq -r .distortion_group_merge config.json)
+unringing_method=$(jq -r .unringing_method config.json)
+hmc_transform=$(jq -r .hmc_transform config.json)
+infant=$(jq -r .infant config.json)
 
 optional=""
 
@@ -28,7 +32,9 @@ if [[ $dwi == *","* ]]; then
 	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
 fi
 
+# boolean options
 [ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
+[ $infant == "true" ] && optional="$optional --infant"
 
 # remove if stuff already exists
 rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
@@ -43,6 +49,9 @@ time singularity exec -e \
     --fs-license-file license.txt \
     --output-resolution $resolution \
     --output-space $space \
+    --denoise-method $denoise_method \
+    --unringing-method $unringing_method \
+    --hmc-transform $hmc_transform \
     --work-dir=$WORKDIRNAME \
     bids $outdir participant \
     $optional
