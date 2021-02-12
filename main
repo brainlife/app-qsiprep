@@ -58,7 +58,11 @@ time singularity exec -e \
     
 #organize output
 mkdir -p output_anat_preproc
-cp $outdir/qsiprep/sub-*/anat/sub-*_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz
+if [ $space == "T1w" ]; then
+    cp $outdir/qsiprep/sub-${sub}/anat/sub-{sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
+elif [ $space == "template" ]; then
+    cp $outdir/qsiprep/sub-${sub}/anat/sub-{sub}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;     
+fi
 
 mkdir -p output_dseg
 cp $outdir/qsiprep/sub-*/anat/sub-*_dseg.nii.gz output_dseg/parc.nii.gz
