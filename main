@@ -58,19 +58,20 @@ time singularity exec -e \
     
 #organize output
 mkdir -p output_anat_preproc
-if [ $space == "T1w" ]; then
-    cp $outdir/qsiprep/sub-${sub}/anat/sub-{sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-elif [ $space == "template" ]; then
-    cp $outdir/qsiprep/sub-${sub}/anat/sub-{sub}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;     
-fi
-
 mkdir -p output_dseg
-cp $outdir/qsiprep/sub-*/anat/sub-*_dseg.nii.gz output_dseg/parc.nii.gz
-cp dseg.key.txt output_dseg/key.txt
-cp dseg.label.json output_dseg/label.json
-
 mkdir -p output_brainmask
-cp $outdir/qsiprep/sub-*/anat/sub-*_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz
+
+SRCDIR=$outdir/qsiprep/sub-${sub}/anat
+
+if [ $space == "T1w" ]; then
+    cp $SRCDIR/sub-${sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
+    cp $SRCDIR/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz;
+    cp $SRCDIR/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
+elif [ $space == "template" ]; then
+    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;     
+    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_dseg.nii.gz output_dseg/parc.nii.gz;
+    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
+fi
 
 mkdir -p output_dwi
 cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
@@ -83,9 +84,9 @@ cp figures.images.json output_figures/images.json #TODO: rewrite with right cont
 
 #reportlets 
 mkdir -p output_report
-for html in $(cd $WORKDIRNAME/reportlets && find ./ -name "*.html"); do
+for html in $(cd $WORKDIRNAME/reportlets && find -name "*.html"); do
     mkdir -p output_report/$(dirname $html)
-    cp reportlets/$html output_report/$html
+    cp $WORKDIRNAME/reportlets/$html output_report/$html
 done
 
 for dir in $(cd $WORKDIRNAME/reportlets && find ./ -name figures); do
@@ -96,4 +97,4 @@ done
 #rename the parent directory to confirm to brainlife html output
 mv output_report/qsiprep output_report/html 
 
-echo "all done!"
+echo "all done!" 
