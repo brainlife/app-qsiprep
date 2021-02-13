@@ -110,11 +110,6 @@ cat << EOF > product.json
             "type": "images", 
 	        "name": "coregistration",
             "base64": "$(base64 -w 0 output_figures/images/sub-${sub}_coreg.svg)"
-        },
-        { 
-            "type": "images", 
-	        "name": "sampling_scheme",
-            "base64": "$(base64 -w 0 output_figures/images/sub-${sub}_sampling_scheme.gif)"
         }
     ]
 }
