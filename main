@@ -78,10 +78,6 @@ cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/
 cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
 cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
 
-mkdir -p output_figures/images
-cp $outdir/qsiprep/sub-*/figures/* output_figures/images
-cp figures.images.json output_figures/images.json #TODO: rewrite with right content
-
 #report
 mkdir -p output_report
 
