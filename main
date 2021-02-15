@@ -86,13 +86,11 @@ cp figures.images.json output_figures/images.json #TODO: rewrite with right cont
 mkdir -p output_report
 
 for html in $(cd $outdir && find -name "*.html"); do
-    echo $html
     mkdir -p output_report/$(dirname $html)
     cp $outdir/$html output_report/$html
 done
 
 for dir in $(cd $outdir && find ./ -name figures); do
-    echo $dir
     mkdir -p output_report/$(dirname $dir)
     cp -r $outdir/$dir output_report/$(dirname $dir)
 done
