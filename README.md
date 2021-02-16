@@ -44,7 +44,6 @@ Check out the brainlife app [here](https://doi.org/10.25663/brainlife.app.246)
 
 ### Running Locally
 
-A)
   1) git clone this repo.
   2) Inside the cloned directory, create `config.json` with something like the following content with paths to your input files.
 
@@ -63,9 +62,9 @@ A)
   ./main
   ```
   
-  ## Output
+  ## Outputs
   
-1) DWI preprecessed;
+1) DWI preprocessed;
 2) T1w preprocessed;
 3) volumetric parcellation;
 4) brain mask;
