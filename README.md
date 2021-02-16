@@ -65,7 +65,11 @@ A)
   
   ## Output
   
-  todo
+1) DWI preprecessed;
+2) T1w preprocessed;
+3) volumetric parcellation;
+4) brain mask;
+5) html report for QA.
   
   ### Dependencies
 
