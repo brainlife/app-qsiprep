@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=8,walltime=9:00:00,vmem=50gb
+## stuff from jobheader.sh
 #PBS -N qsiprep
 
 set -x
