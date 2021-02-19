@@ -52,6 +52,7 @@ time singularity exec -e \
     --denoise-method $denoise_method \
     --unringing-method $unringing_method \
     --hmc-transform $hmc_transform \
+    --nthreads 8 \
     --work-dir $WORKDIRNAME \
     bids $outdir participant \
     $optional
