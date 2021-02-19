@@ -2,7 +2,7 @@
 
 ##figure out amount of wall time we really need by parsing config.json with jq
 if [[ $(jq -r .dwi config.json) == *","* ]]; then
-    walltime=16:00:00
+    walltime=20:00:00
 else
     walltime=06:00:00
 fi
