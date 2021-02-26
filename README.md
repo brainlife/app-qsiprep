@@ -45,6 +45,10 @@ Check out the brainlife app [here](https://doi.org/10.25663/brainlife.app.246)
 ### Running Locally
 
 Information on how to run QSIPrep locally can be found here: https://qsiprep.readthedocs.io/en/latest/usage.html#
+
+### Inputs
+
+You would need a T1w image and (at least) one DWI volume. If you input a second DWI, be sure that it has an opposite Phase Encoding Direction than the first DWI. At the moment, no more than 2 DWIs can be selected.
   
 ### Outputs
   
