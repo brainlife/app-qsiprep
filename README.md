@@ -5,7 +5,7 @@
 
 # app-qsiprep
 
-This app runs [QSIPrep](https://github.com/pennbbl/qsiprep) on the [brainlife.io](https://brainlife.io/) interface. QSIPrep configures pipelines for processing diffusion-weighted MRI (dMRI) data. This App implements only the preprocessing piplines (and not the reconstruction pipelines). The preprocessing pipelines are built based on the available BIDS inputs, ensuring that fieldmaps are handled correctly. The preprocessing workflow performs head motion correction, susceptibility distortion correction, MP-PCA denoising, coregistration to T1w images, spatial normalization using ANTs and tissue segmentation.
+This App runs [QSIPrep](https://github.com/pennbbl/qsiprep) on the [brainlife.io](https://brainlife.io/) interface. QSIPrep configures pipelines for processing diffusion-weighted MRI (dMRI) data. This App implements only the preprocessing piplines (and not the reconstruction pipelines). The preprocessing pipelines are built based on the available BIDS inputs, ensuring that fieldmaps are handled correctly. The preprocessing workflow performs head motion correction, susceptibility distortion correction, MP-PCA denoising, coregistration to T1w images, spatial normalization using ANTs and tissue segmentation.
 
 #### References and resources to consider
 * QSIPrep bioRxiv paper: https://www.biorxiv.org/content/10.1101/2020.09.04.282269v1
@@ -29,7 +29,7 @@ brainlife.io is publicly funded and for the sustainability of the project it is 
 [![NIH-NIBIB-R01EB029272](https://img.shields.io/badge/NIH_NIBIB-R01EB029272-green.svg)](https://grantome.com/grant/NIH/R01-EB029272-01)
 
 ### Citations
-We ask that you the following articles when publishing papers that used data, code or other resources created by the brainlife.io community.
+We ask that you cite the following articles when publishing papers that used data, code or other resources created by the brainlife.io community.
 
 1. Matthew Cieslak, Philip A. Cook, Xiaosong He, Fang-Cheng Yeh, Thijs Dhollander, Azeez Adebimpe, Geoffrey K. Aguirre, Danielle S. Bassett, Richard F. Betzel, Josiane Bourque, Laura M. Cabral, Christos Davatzikos, John Detre, Eric Earl, Mark A. Elliott, Shreyas Fadnavis, Damien A. Fair, Will Foran, Panagiotis Fotiadis, Eleftherios Garyfallidis, Barry Giesbrecht, Ruben C. Gur, Raquel E. Gur, Max Kelz, Anisha Keshavan, Bart S. Larsen, Beatriz Luna, Allyson P. Mackey, Michael Milham, Desmond J. Oathes, Anders Perrone, Adam R. Pines, David R. Roalf, Adam Richie-Halford, Ariel Rokem, Valerie J. Sydnor, Tinashe M. Tapera, Ursula A. Tooley, Jean M. Vettel, Jason D. Yeatman, Scott T. Grafton, Theodore D. Satterthwaite. QSIPrep: An integrative platform for preprocessing and reconstructing diffusion MRI.
 bioRxiv 2020.09.04.282269; doi: https://doi.org/10.1101/2020.09.04.282269
