@@ -4,8 +4,8 @@
 if [[ $(jq -r .dwi config.json) == *","* ]]; then
     walltime=12:00:00
 else
-    walltime=00:05:00
+    walltime=06:00:00
 fi
 
-echo "#PBS -l nodes=1:ppn=8,vmem=4gb"
+echo "#PBS -l nodes=1:ppn=8,vmem=40gb"
 echo "#PBS -l walltime=$walltime"
