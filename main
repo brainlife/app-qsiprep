@@ -24,7 +24,7 @@ distortion_group_merge=$(jq -r .distortion_group_merge config.json)
 unringing_method=$(jq -r .unringing_method config.json)
 hmc_transform=$(jq -r .hmc_transform config.json)
 infant=$(jq -r .infant config.json)
-syn_sdc=$(jq -r .syn_sdc)
+syn_sdc=$(jq -r .syn_sdc config.json)
 
 optional=""
 
