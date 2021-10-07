@@ -57,8 +57,8 @@ time singularity exec -e \
     --unringing-method $unringing_method \
     --hmc-transform $hmc_transform \
     --nthreads 8 \
-    --work-dir $WORKDIRNAME \
     bids $outdir participant \
+    -w $WORKDIRNAME \
     $optional
     
 #organize output
