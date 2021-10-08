@@ -48,7 +48,7 @@ rm -rf $outdir && mkdir -p $outdir
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
 time singularity exec -e \
-    docker://pennbbl/qsiprep:0.14.3 \
+    docker://pennbbl/qsiprep:0.13.0RC1 \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
     --output-resolution $resolution \
@@ -58,8 +58,9 @@ time singularity exec -e \
     --hmc-transform $hmc_transform \
     --nthreads 8 \
     --verbose \
+    --work-dir $WORKDIRNAME \
+    --do-reconall \
     bids $outdir participant \
-    -w $WORKDIRNAME \
     $optional
     
 #organize output
