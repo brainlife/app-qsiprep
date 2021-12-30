@@ -59,7 +59,6 @@ time singularity exec -e \
     --nthreads 8 \
     --verbose \
     --work-dir $WORKDIRNAME \
-    --do-reconall \
     bids $outdir participant \
     $optional
     
