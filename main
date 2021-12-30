@@ -15,6 +15,7 @@ outdir=output
 
 resolution=$(jq -r .output_resolution config.json) 
 space=$(jq -r .output_space config.json) 
+template=$(jq -r .template config.json) 
 #sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
 dwi=$(jq -r .dwi config.json)
@@ -25,7 +26,7 @@ unringing_method=$(jq -r .unringing_method config.json)
 hmc_transform=$(jq -r .hmc_transform config.json)
 infant=$(jq -r .infant config.json)
 syn_sdc=$(jq -r .syn_sdc config.json)
-force_syn=$(jq -r .force_syn config.json)
+force_syn=$(jq -r .force_syn config.json) #keep to be back compatible
 
 optional=""
 
@@ -34,7 +35,13 @@ if [[ $dwi == *","* ]]; then
 	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
 fi
 
+if [[ $space == "T1w" ]]; then 
+	echo "Sampling to T1w space."; 
+	optional="$optional --output-space T1w";	
+fi
+
 # boolean options
+[ $template == "true" ] && optional="$optional --template"
 [ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
 [ $infant == "true" ] && optional="$optional --infant"
 [ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc --force-syn"
@@ -51,7 +58,6 @@ time singularity exec -e \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
     --output-resolution $resolution \
-    --output-space $space \
     --denoise-method $denoise_method \
     --unringing-method $unringing_method \
     --hmc-transform $hmc_transform \
