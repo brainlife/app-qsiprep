@@ -40,8 +40,12 @@ if [[ $space == "T1w" ]]; then
 	optional="$optional --output-space T1w";	
 fi
 
+if [[ $template == "MNI152NLin2009cAsym" ]]; then 
+	echo "Sampling to MNI152NLin2009cAsym space."; 
+	optional="$optional --template MNI152NLin2009cAsym";	
+fi
+
 # boolean options
-[ $template == "true" ] && optional="$optional --template"
 [ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
 [ $infant == "true" ] && optional="$optional --infant"
 [ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc --force-syn"
