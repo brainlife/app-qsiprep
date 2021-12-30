@@ -37,8 +37,7 @@ fi
 # boolean options
 [ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
 [ $infant == "true" ] && optional="$optional --infant"
-[ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc"
-[ $force_syn == "true" ] && optional="$optional --force-syn"
+[ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc --force-syn"
 
 # remove if stuff already exists
 rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
