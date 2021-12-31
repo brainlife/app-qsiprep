@@ -35,13 +35,8 @@ if [[ $dwi == *","* ]]; then
 	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
 fi
 
-if [[ $space == "T1w" ]]; then 
-	echo "Sampling to T1w space."; 
-	optional="$optional --output-space T1w";	
-fi
-
-if [[ $template == "MNI152NLin2009cAsym" ]]; then 
-	echo "Sampling to MNI152NLin2009cAsym space."; 
+if [[ $space == "MNI152NLin2009cAsym" ]]; then 
+	echo "Sampling T1w, brain mask, and parcellation/volume to MNI152NLin2009cAsym space."; 
 	optional="$optional --template MNI152NLin2009cAsym";	
 fi
 

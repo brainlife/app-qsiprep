@@ -24,7 +24,7 @@ if [ $space == "T1w" ]; then
     cp $SRCDIR/sub-${sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
     cp $SRCDIR/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz;
     cp $SRCDIR/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
-elif [ $template == "MNI152NLin2009cAsym" ]; then
+elif [ $space == "MNI152NLin2009cAsym" ]; then
     cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;     
     cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_dseg.nii.gz output_dseg/parc.nii.gz;
     cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
