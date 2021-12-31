@@ -11,6 +11,8 @@ outdir=output
 
 # get basename for output
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
+space=$(jq -r .output_space config.json) 
+xflip=$(jq -r .xflip config.json) 
 oDir=$outdir/fmriprep/sub-$sub
 
 #organize output
@@ -50,3 +52,11 @@ done
 
 #rename the parent directory to confirm to brainlife html output
 mv output_report/qsiprep output_report/html 
+
+#flip bvecs 
+if [ $xflip == "true" ]; then
+    echo "flip x-bvecs to be compatible with MRtrix"
+    singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./msa/main
+    rm -rf output_dwi/dwi.bvecs
+    cp dwi.bvecs output_dwi/dwi.bvecs
+fi
