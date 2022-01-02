@@ -52,19 +52,19 @@ rm -rf $outdir && mkdir -p $outdir
 # set FreeSurfer
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
-time singularity exec -e \
-    docker://pennbbl/qsiprep:0.13.0RC1 \
-    /usr/local/miniconda/bin/qsiprep \
-    --fs-license-file license.txt \
-    --output-resolution $resolution \
-    --denoise-method $denoise_method \
-    --unringing-method $unringing_method \
-    --hmc-transform $hmc_transform \
-    --nthreads 8 \
-    --verbose \
-    --work-dir $WORKDIRNAME \
-    bids $outdir participant \
-    $optional
+# time singularity exec -e \
+#     docker://pennbbl/qsiprep:0.13.0RC1 \
+#     /usr/local/miniconda/bin/qsiprep \
+#     --fs-license-file license.txt \
+#     --output-resolution $resolution \
+#     --denoise-method $denoise_method \
+#     --unringing-method $unringing_method \
+#     --hmc-transform $hmc_transform \
+#     --nthreads 8 \
+#     --verbose \
+#     --work-dir $WORKDIRNAME \
+#     bids $outdir participant \
+#     $optional
     
 echo "done with qsiprep! - now organizing output"
 ./qsiprep2bl.sh
