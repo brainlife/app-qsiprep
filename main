@@ -8,67 +8,67 @@ set -e
 export FREESURFER_LICENSE="hayashis@iu.edu 29511 *CPmh9xvKQKHE FSg0ijTusqaQc"
 echo $FREESURFER_LICENSE > license.txt
 
-# bl2bids
+bl2bids
 
-# WORKDIRNAME=qsipworkdir
-# outdir=output
+WORKDIRNAME=qsipworkdir
+outdir=output
 
-# resolution=$(jq -r .output_resolution config.json) 
-# space=$(jq -r .output_space config.json) 
-# template=$(jq -r .template config.json) 
-# #sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
-# sub=$(jq -r '._inputs[0].meta.subject' config.json)
-# dwi=$(jq -r .dwi config.json)
-# skipbidsvalidation=$(jq -r .skipbidsvalidation config.json)
-# denoise_method=$(jq -r .denoise_method config.json)
-# distortion_group_merge=$(jq -r .distortion_group_merge config.json)
-# unringing_method=$(jq -r .unringing_method config.json)
-# hmc_transform=$(jq -r .hmc_transform config.json)
-# infant=$(jq -r .infant config.json)
-# syn_sdc=$(jq -r .syn_sdc config.json)
-# force_syn=$(jq -r .force_syn config.json) #keep to be back compatible
+resolution=$(jq -r .output_resolution config.json) 
+space=$(jq -r .output_space config.json) 
+template=$(jq -r .template config.json) 
+#sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
+sub=$(jq -r '._inputs[0].meta.subject' config.json)
+dwi=$(jq -r .dwi config.json)
+skipbidsvalidation=$(jq -r .skipbidsvalidation config.json)
+denoise_method=$(jq -r .denoise_method config.json)
+distortion_group_merge=$(jq -r .distortion_group_merge config.json)
+unringing_method=$(jq -r .unringing_method config.json)
+hmc_transform=$(jq -r .hmc_transform config.json)
+infant=$(jq -r .infant config.json)
+syn_sdc=$(jq -r .syn_sdc config.json)
+force_syn=$(jq -r .force_syn config.json) #keep to be back compatible
 
-# optional=""
+optional=""
 
-# if [[ $dwi == *","* ]]; then 
-# 	echo "Multi dwi input found. Distortion group merge option: ${distortion_group_merge}"; 
-# 	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
-# fi
+if [[ $dwi == *","* ]]; then 
+	echo "Multi dwi input found. Distortion group merge option: ${distortion_group_merge}"; 
+	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
+fi
 
-# if [[ $space == "MNI152NLin2009cAsym" ]]; then 
-# 	echo "Sampling T1w, brain mask, and parcellation/volume to MNI152NLin2009cAsym space."; 
-# 	optional="$optional --template MNI152NLin2009cAsym";	
-# fi
+if [[ $space == "MNI152NLin2009cAsym" ]]; then 
+	echo "Sampling T1w, brain mask, and parcellation/volume to MNI152NLin2009cAsym space."; 
+	optional="$optional --template MNI152NLin2009cAsym";	
+fi
 
-# # boolean options
-# [ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
-# [ $infant == "true" ] && optional="$optional --infant"
-# [ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc --force-syn"
+# boolean options
+[ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
+[ $infant == "true" ] && optional="$optional --infant"
+[ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc --force-syn"
 
-# # remove if stuff already exists
-# rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
-# rm -rf $outdir && mkdir -p $outdir
+# remove if stuff already exists
+rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
+rm -rf $outdir && mkdir -p $outdir
 
-# # set FreeSurfer
-# [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+# set FreeSurfer
+[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
-# time singularity exec -e \
-#     docker://pennbbl/qsiprep:0.13.0RC1 \
-#     /usr/local/miniconda/bin/qsiprep \
-#     --fs-license-file license.txt \
-#     --output-resolution $resolution \
-#     --denoise-method $denoise_method \
-#     --unringing-method $unringing_method \
-#     --hmc-transform $hmc_transform \
-#     --nthreads 8 \
-#     --verbose \
-#     --work-dir $WORKDIRNAME \
-#     bids $outdir participant \
-#     $optional
+time singularity exec -e \
+    docker://pennbbl/qsiprep:0.13.0RC1 \
+    /usr/local/miniconda/bin/qsiprep \
+    --fs-license-file license.txt \
+    --output-resolution $resolution \
+    --denoise-method $denoise_method \
+    --unringing-method $unringing_method \
+    --hmc-transform $hmc_transform \
+    --nthreads 8 \
+    --verbose \
+    --work-dir $WORKDIRNAME \
+    bids $outdir participant \
+    $optional
     
 echo "done with qsiprep! - now organizing output"
 ./qsiprep2bl.sh
 
-#rm -r $WORKDIRNAME # save lots of space    
+rm -r $WORKDIRNAME # save lots of space    
 
 echo "all done!" 
