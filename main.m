@@ -13,9 +13,6 @@ config = loadjson('config.json');
 %load bvecs
 bvecs = dlmread(config.bvecs_out);
 
-%params
-params.x_flip = config.xflip;
-
 if ~(size(bvecs,1) == 3), bvecs = bvecs'; end
 bvecs(1,:) = -bvecs(1,:);
 
