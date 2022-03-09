@@ -18,6 +18,7 @@ sub=$(jq -r '._inputs[0].meta.subject' config.json)
 space=$(jq -r .output_space config.json)
 xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
+ses=($ses)
 
 #organize output
 mkdir -p output_anat_preproc
@@ -33,13 +34,13 @@ mkdir -p output_report
 # is the subject stem, and is used to make identifying the appropriate dwi
 # files easier
 outdir=$outstem/qsiprep
-outsub=$outdir/sub-*
+outsub="$outdir/sub-${sub}"
 SRCDIR=$outsub/anat
-outfile=sub-*_
+outfile="sub-${sub}"
 
 # if a session tag exists, append to outsub and outfile
-[ "$ses" != "null" ] && outsub=$outsub/ses-$ses
-[ "$ses" != "null" ] && outfile=${outfile}_ses-$ses
+[ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
+[ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
 
 # copy the appropriate anatomy data, based on space input
 if [ $space == "T1w" ]; then
