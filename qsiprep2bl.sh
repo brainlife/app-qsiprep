@@ -38,6 +38,12 @@ outsub="$outdir/sub-${sub}"
 SRCDIR=$outsub/anat
 outfile="sub-${sub}"
 
+# copy over figures to appropriate output dir
+for dir in $(cd $outsub && find ./ -name figures); do
+    mkdir -p output_report/$(dirname $dir)
+    cp -r $outsub/$dir output_report/$(dirname $dir)
+done
+
 # if a session tag exists, append to outsub and outfile
 [ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
 [ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
@@ -62,12 +68,6 @@ cp $outsub/dwi/${outfile}_space-${space}_desc-preproc_dwi.bval output_dwi/dwi.bv
 for html in $(cd $outdir && find -name "*.html"); do
     mkdir -p output_report/$(dirname $html)
     cp $outdir/$html output_report/$html
-done
-
-# copy over figures to appropriate output dir
-for dir in $(cd $outsub && find ./ -name figures); do
-    mkdir -p output_report/$(dirname $dir)
-    cp -r $outsub/$dir output_report/$(dirname $dir)
 done
 
 #rename the parent directory to confirm to brainlife html output
