@@ -25,7 +25,7 @@ mkdir -p output_anat_preproc
 mkdir -p output_dseg
 mkdir -p output_brainmask
 mkdir -p output_dwi
-mkdir -p output_report
+mkdir -p output_report output_report/html
 
 # set file paths and stems. outdir is the output dir + qsiprep, and is used to
 # grab the html and figures files. outsub is the outdir + the subject stem, and
@@ -71,7 +71,7 @@ for html in $(cd $outdir && find -name "*.html"); do
 done
 
 #rename the parent directory to confirm to brainlife html output
-mv output_report/qsiprep output_report/html
+mv output_report/figures output_report/logs output_report/html/
 
 #flip bvecs
 if [ $xflip == "true" ]; then
