@@ -18,13 +18,14 @@ sub=$(jq -r '._inputs[0].meta.subject' config.json)
 space=$(jq -r .output_space config.json)
 xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
+ses=($ses)
 
 #organize output
 mkdir -p output_anat_preproc
 mkdir -p output_dseg
 mkdir -p output_brainmask
 mkdir -p output_dwi
-mkdir -p output_report
+mkdir -p output_report output_report/html
 
 # set file paths and stems. outdir is the output dir + qsiprep, and is used to
 # grab the html and figures files. outsub is the outdir + the subject stem, and
@@ -33,13 +34,19 @@ mkdir -p output_report
 # is the subject stem, and is used to make identifying the appropriate dwi
 # files easier
 outdir=$outstem/qsiprep
-outsub=$outdir/sub-*
+outsub="$outdir/sub-${sub}"
 SRCDIR=$outsub/anat
-outfile=sub-*_
+outfile="sub-${sub}"
+
+# copy over figures to appropriate output dir
+for dir in $(cd $outsub && find ./ -name figures); do
+    mkdir -p output_report/$(dirname $dir)
+    cp -r $outsub/$dir output_report/$(dirname $dir)
+done
 
 # if a session tag exists, append to outsub and outfile
-[ "$ses" != "null" ] && outsub=$outsub/ses-$ses
-[ "$ses" != "null" ] && outfile=${outfile}_ses-$ses
+[ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
+[ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
 
 # copy the appropriate anatomy data, based on space input
 if [ $space == "T1w" ]; then
@@ -63,14 +70,8 @@ for html in $(cd $outdir && find -name "*.html"); do
     cp $outdir/$html output_report/$html
 done
 
-# copy over figures to appropriate output dir
-for dir in $(cd $outsub && find ./ -name figures); do
-    mkdir -p output_report/$(dirname $dir)
-    cp -r $outsub/$dir output_report/$(dirname $dir)
-done
-
 #rename the parent directory to confirm to brainlife html output
-mv output_report/qsiprep output_report/html
+mv output_report/figures output_report/logs output_report/html/
 
 #flip bvecs
 if [ $xflip == "true" ]; then
