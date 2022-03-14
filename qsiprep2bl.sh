@@ -54,9 +54,9 @@ elif [ $space == "MNI152NLin2009cAsym" ]; then
 fi
 
 # copy dwi output to bl output dir
-cp $outsub/dwi/${outfile}_space-${space}_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
-cp $outsub/dwi/${outfile}_space-${space}_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
-cp $outsub/dwi/${outfile}_space-${space}_desc-preproc_dwi.bval output_dwi/dwi.bvals
+cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
+cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
+cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
 
 # copy over report html to output dir
 for html in $(cd $outstem && find -name "*.html"); do
