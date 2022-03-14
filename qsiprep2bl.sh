@@ -25,7 +25,7 @@ mkdir -p output_anat_preproc
 mkdir -p output_dseg
 mkdir -p output_brainmask
 mkdir -p output_dwi
-mkdir -p output_report output_report/html
+mkdir -p output_report
 
 # set file paths and stems. outdir is the output dir + qsiprep, and is used to
 # grab the html and figures files. outsub is the outdir + the subject stem, and
@@ -37,12 +37,6 @@ outdir=$outstem/qsiprep
 outsub="$outdir/sub-${sub}"
 SRCDIR=$outsub/anat
 outfile="sub-${sub}"
-
-# copy over figures to appropriate output dir
-for dir in $(cd $outsub && find ./ -name figures); do
-    mkdir -p output_report/$(dirname $dir)
-    cp -r $outsub/$dir output_report/$(dirname $dir)
-done
 
 # if a session tag exists, append to outsub and outfile
 [ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
@@ -65,13 +59,18 @@ cp $outsub/dwi/${outfile}_space-${space}_desc-preproc_dwi.bvec output_dwi/dwi.bv
 cp $outsub/dwi/${outfile}_space-${space}_desc-preproc_dwi.bval output_dwi/dwi.bvals
 
 # copy over report html to output dir
-for html in $(cd $outdir && find -name "*.html"); do
+for html in $(cd $outstem && find -name "*.html"); do
     mkdir -p output_report/$(dirname $html)
-    cp $outdir/$html output_report/$html
+    cp $outstem/$html output_report/$html
+done
+
+for dir in $(cd $outstem && find ./ -name figures); do
+    mkdir -p output_report/$(dirname $dir)
+    cp -r $outstem/$dir output_report/$(dirname $dir)
 done
 
 #rename the parent directory to confirm to brainlife html output
-mv output_report/figures output_report/logs output_report/html/
+mv output_report/qsiprep output_report/html 
 
 #flip bvecs
 if [ $xflip == "true" ]; then
