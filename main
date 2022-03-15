@@ -27,6 +27,7 @@ hmc_transform=$(jq -r .hmc_transform config.json)
 infant=$(jq -r .infant config.json)
 syn_sdc=$(jq -r .syn_sdc config.json)
 force_syn=$(jq -r .force_syn config.json) #keep to be back compatible
+check_flip_bvecs=$(jq -r .check_flip_bvecs config.json)
 
 optional=""
 
@@ -52,9 +53,23 @@ rm -rf $outdir && mkdir -p $outdir
 # set FreeSurfer
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
-echo "check if bvecs need to be flipped - flip them if necessary"
-./check_and_flip_bvecs.sh
+# check and flip bvecs if needed
+if [[ $check_flip_bvecs == "true" ]]; then 
+	echo "check if bvecs need to be flipped - flip them if necessary"
+	./check_and_flip_bvecs.sh
+fi
+#overwrite bvecs
+outsub="bids/sub-${sub}"
+outfile="sub-${sub}"
+ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
+ses=($ses)
+# if a session tag exists, append to outsub and outfile
+[ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
+[ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
+bvecs_path=$outsub/dwi/${outfile}_dwi.bvec
+mv -f dwi_new.bvecs $bvecs_path
 
+# QSIPrep
 time singularity exec -e \
     docker://pennbbl/qsiprep:0.13.0RC1 \
     /usr/local/miniconda/bin/qsiprep \
