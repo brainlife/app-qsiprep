@@ -6,7 +6,7 @@ set -e
 # with small changes, since here dwi, bvals, and bvecs filenames are in a list
 SINGULARITYENV_PYTHONNOUSERSITE=true singularity exec -e docker://brainlife/dipy:1.1.1 ./detect.py
 
-msg=$(jq -r '.brainlife[].msg' product_new.json)
+msg=$(jq -r '.brainlife[].msg' product.json)
 bvecs=$(jq -r '.bvecs[0]' config.json)
 
 #backup config.json
