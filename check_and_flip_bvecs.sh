@@ -30,7 +30,8 @@ else
 		echo "{\"bvecs_out\": \"$bvecs\", \"zflip\": \"true\"}" > config.json
 	fi
 
-    singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
+	singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
+	echo "Flipping done."
 
 	#overwrite bvecs
 	outsub="bids/sub-${sub}"
@@ -46,5 +47,4 @@ else
 	rm config.json 
 	mv config_original.json config.json #restore original config.json
 fi
-
 
