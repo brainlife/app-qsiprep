@@ -74,9 +74,9 @@ mv output_report/qsiprep output_report/html
 
 #flip bvecs
 if [ $xflip == "true" ]; then
-    echo "flip x-bvecs to be compatible with MRtrix"
-    sed -i '$s/}/,\n"bvecs_out":".\/output_dwi\/dwi.bvecs"}/' config.json
+    echo "flip bvecs-x to be compatible with MRtrix"
+    sed -i '$s/}/,\n"bvecs_out":".\/output_dwi\/dwi.bvecs"}/' config.json #input bvecs
     singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
-    rm output_dwi/dwi.bvecs
-    cp dwi.bvecs output_dwi/dwi.bvecs
+    rm output_dwi/dwi.bvecs #input bvecs
+    cp dwi.bvecs output_dwi/dwi.bvecs #flipped bvecs
 fi
