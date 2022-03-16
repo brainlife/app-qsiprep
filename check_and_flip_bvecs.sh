@@ -8,12 +8,15 @@ SINGULARITYENV_PYTHONNOUSERSITE=true singularity exec -e docker://brainlife/dipy
 
 msg=$(jq -r '.brainlife[].msg' product.json)
 bvecs=$(jq -r '.bvecs[0]' config.json)
+sub=$(jq -r '._inputs[0].meta.subject' config.json)
+ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
+ses=($ses)
 
 if [[ "$msg" =~ "bvecs directions look good!" ]]; then
 	echo "No bvecs flip is needed!"
-	cp $bvecs ./dwi_new.bvecs
 
 else
+
 	mv config.json config_original.json #backup config.json
 
 	if [[ "$msg" =~ "bvecs-x seems to be flipped." ]]; then
@@ -28,7 +31,18 @@ else
 	fi
 
     singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
-    cp dwi.bvecs ./dwi_new.bvecs #flipped bvecs
+
+	#overwrite bvecs
+	outsub="bids/sub-${sub}"
+	outfile="sub-${sub}"
+
+	# if a session tag exists, append to outsub and outfile
+	[ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
+	[ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
+
+	bvecs_path=$outsub/dwi/${outfile}_dwi.bvec
+	mv -f dwi.bvecs $bvecs_path
+
 	rm config.json 
 	mv config_original.json config.json #restore original config.json
 fi

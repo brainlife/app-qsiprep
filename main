@@ -57,16 +57,6 @@ rm -rf $outdir && mkdir -p $outdir
 if [[ $check_flip_bvecs == "true" ]]; then 
 	echo "check if bvecs need to be flipped - flip them if necessary"
 	./check_and_flip_bvecs.sh
-	#overwrite bvecs
-	outsub="bids/sub-${sub}"
-	outfile="sub-${sub}"
-	ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
-	ses=($ses)
-	# if a session tag exists, append to outsub and outfile
-	[ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
-	[ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
-	bvecs_path=$outsub/dwi/${outfile}_dwi.bvec
-	mv -f dwi_new.bvecs $bvecs_path
 fi
 
 # QSIPrep
