@@ -15,6 +15,7 @@ outdir=output
 
 resolution=$(jq -r .output_resolution config.json) 
 space=$(jq -r .output_space config.json) 
+template=$(jq -r .template config.json) 
 #sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
 dwi=$(jq -r .dwi config.json)
@@ -25,7 +26,8 @@ unringing_method=$(jq -r .unringing_method config.json)
 hmc_transform=$(jq -r .hmc_transform config.json)
 infant=$(jq -r .infant config.json)
 syn_sdc=$(jq -r .syn_sdc config.json)
-force_syn=$(jq -r .force_syn config.json)
+force_syn=$(jq -r .force_syn config.json) #keep to be back compatible
+check_flip_bvecs=$(jq -r .check_flip_bvecs config.json)
 
 optional=""
 
@@ -34,11 +36,15 @@ if [[ $dwi == *","* ]]; then
 	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
 fi
 
+if [[ $space == "MNI152NLin2009cAsym" ]]; then 
+	echo "Sampling T1w, brain mask, and parcellation/volume to MNI152NLin2009cAsym space."; 
+	optional="$optional --template MNI152NLin2009cAsym";	
+fi
+
 # boolean options
 [ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
 [ $infant == "true" ] && optional="$optional --infant"
-[ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc"
-[ $force_syn == "true" ] && optional="$optional --force-syn"
+[ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc --force-syn"
 
 # remove if stuff already exists
 rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
@@ -47,56 +53,30 @@ rm -rf $outdir && mkdir -p $outdir
 # set FreeSurfer
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
+# check and flip bvecs if needed
+if [[ $check_flip_bvecs == "true" ]]; then 
+	echo "check if bvecs need to be flipped - flip them if necessary"
+	./check_and_flip_bvecs.sh
+fi
+
+# QSIPrep
 time singularity exec -e \
-    docker://pennbbl/qsiprep:0.14.2 \
+    docker://pennbbl/qsiprep:0.15.3 \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
     --output-resolution $resolution \
-    --output-space $space \
     --denoise-method $denoise_method \
     --unringing-method $unringing_method \
     --hmc-transform $hmc_transform \
     --nthreads 8 \
+    --verbose \
     --work-dir $WORKDIRNAME \
     bids $outdir participant \
     $optional
     
-#organize output
-mkdir -p output_anat_preproc
-mkdir -p output_dseg
-mkdir -p output_brainmask
+echo "done with qsiprep! - now organizing output"
+./qsiprep2bl.sh
 
-SRCDIR=$outdir/qsiprep/sub-${sub}/anat
-
-if [ $space == "T1w" ]; then
-    cp $SRCDIR/sub-${sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-    cp $SRCDIR/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
-elif [ $space == "template" ]; then
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;     
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
-fi
-
-mkdir -p output_dwi
-cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
-cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
-cp $outdir/qsiprep/sub-*/dwi/sub-*_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
-
-#report
-mkdir -p output_report
-
-for html in $(cd $outdir && find -name "*.html"); do
-    mkdir -p output_report/$(dirname $html)
-    cp $outdir/$html output_report/$html
-done
-
-for dir in $(cd $outdir && find ./ -name figures); do
-    mkdir -p output_report/$(dirname $dir)
-    cp -r $outdir/$dir output_report/$(dirname $dir)
-done
-
-#rename the parent directory to confirm to brainlife html output
-mv output_report/qsiprep output_report/html 
+rm -r $WORKDIRNAME # save lots of space    
 
 echo "all done!" 
