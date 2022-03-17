@@ -86,4 +86,4 @@ fi
 
 # copy confounds.tsv file to regressors directory
 [ ! -d ./regressors ] && mkdir -p regressors
-[ ! -f ./regressors/regressors.tsv ] && cp $outsub/dwi/*_confounds.tsv ./regressors/regresors.tsv
+[ ! -f ./regressors/regressors.tsv ] && cp $outsub/dwi/*_confounds.tsv ./regressors/regressors.tsv
