@@ -6,7 +6,7 @@
 This App runs [QSIPrep](https://github.com/pennbbl/qsiprep) on the [brainlife.io](https://brainlife.io/) interface. QSIPrep configures pipelines for processing diffusion-weighted MRI (dMRI) data. This App implements only the preprocessing piplines (and not the reconstruction pipelines). The preprocessing pipelines are built based on the available BIDS inputs, ensuring that fieldmaps are handled correctly. The preprocessing workflow performs head motion correction, susceptibility distortion correction, MP-PCA denoising, coregistration to T1w images, spatial normalization using ANTs and tissue segmentation.
 
 #### References and resources to consider
-* QSIPrep bioRxiv paper: https://www.biorxiv.org/content/10.1101/2020.09.04.282269v1
+* QSIPrep paper: https://www.nature.com/articles/s41592-021-01185-5
 * QSIPrep documentation: https://qsiprep.readthedocs.io
 * QSIPrep full list of citations: https://qsiprep.readthedocs.io/en/latest/citing.html 
 
