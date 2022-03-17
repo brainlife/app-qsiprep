@@ -20,7 +20,7 @@ xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
 ses=($ses)
 
-#organize output
+# organize output
 mkdir -p output_anat_preproc
 mkdir -p output_dseg
 mkdir -p output_brainmask
@@ -69,14 +69,21 @@ for dir in $(cd $outstem && find ./ -name figures); do
     cp -r $outstem/$dir output_report/$(dirname $dir)
 done
 
-#rename the parent directory to confirm to brainlife html output
-mv output_report/qsiprep output_report/html 
+# rename the parent directory to confirm to brainlife html output
+mv output_report/qsiprep output_report/html
 
-#flip bvecs
+# flip bvecs
 if [ $xflip == "true" ]; then
     echo "flip bvecs-x to be compatible with MRtrix"
     sed -i '$s/}/,\n"bvecs_out":".\/output_dwi\/dwi.bvecs"}/' config.json #input bvecs
     singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
     rm output_dwi/dwi.bvecs #input bvecs
     cp dwi.bvecs output_dwi/dwi.bvecs #flipped bvecs
+    ##remove bvecs from config.json
+    #tmp=$(mktemp)
+    #jq '._inputs[1].meta.bvecs = ""' config.json > "$tmp" && mv "$tmp" config.json
 fi
+
+# copy confounds.tsv file to regressors directory
+[ ! -d ./regressors ] && mkdir -p regressors
+[ ! -f ./regressors/regressors.tsv ] && cp $outsub/dwi/*_confounds.tsv ./regressors/regresors.tsv
