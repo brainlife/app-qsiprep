@@ -46,5 +46,9 @@ else
 
 	rm config.json 
 	mv config_original.json config.json #restore original config.json
+
+	#remove bvecs from config.json
+	tmp=$(mktemp)
+	jq '._inputs[1].meta.bvecs = ""' config.json > "$tmp" && mv "$tmp" config.json
 fi
 
