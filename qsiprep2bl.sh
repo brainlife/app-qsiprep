@@ -70,7 +70,7 @@ for dir in $(cd $outstem && find ./ -name figures); do
 done
 
 #rename the parent directory to confirm to brainlife html output
-mv output_report/qsiprep output_report/html 
+mv output_report/qsiprep output_report/html
 
 #flip bvecs
 if [ $xflip == "true" ]; then
@@ -80,3 +80,7 @@ if [ $xflip == "true" ]; then
     rm output_dwi/dwi.bvecs #input bvecs
     cp dwi.bvecs output_dwi/dwi.bvecs #flipped bvecs
 fi
+
+# copy confounds.tsv file to regressors directory
+[ ! -d ./regressors ] && mkdir -p regressors
+[ ! -f ./regressors/regressors.tsv ] && cp $outsub/dwi/*_confounds.tsv ./regressors/regresors.tsv
