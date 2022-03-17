@@ -61,7 +61,7 @@ fi
 
 # QSIPrep
 time singularity exec -e \
-    docker://pennbbl/qsiprep:0.14.2 \
+    docker://pennbbl/qsiprep:0.15.3 \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
     --output-resolution $resolution \
