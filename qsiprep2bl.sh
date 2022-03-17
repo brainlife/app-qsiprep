@@ -79,4 +79,7 @@ if [ $xflip == "true" ]; then
     singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
     rm output_dwi/dwi.bvecs #input bvecs
     cp dwi.bvecs output_dwi/dwi.bvecs #flipped bvecs
+	#remove bvecs from config.json
+	tmp=$(mktemp)
+	jq '._inputs[1].meta.bvecs = ""' config.json > "$tmp" && mv "$tmp" config.json
 fi
