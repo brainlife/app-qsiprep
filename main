@@ -62,7 +62,6 @@ if [[ $inFSDIR != "null" ]] ; then
     mkdir -p $outdir/freesurfer
 
     #TODO - strip alphanumeric chars?
-    sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
     cp -rH $inFSDIR $outdir/freesurfer/sub-$sub
     chmod -R +rw $outdir/freesurfer
 fi
