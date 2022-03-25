@@ -61,10 +61,10 @@ fi
 
 # QSIPrep
 time singularity exec -e \
-    docker://pennbbl/qsiprep:0.15.3 \
+    docker://pennbbl/qsiprep:0.14.2 \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
-    --do_reconall \
+    --do-reconall \
     --output-resolution $resolution \
     --denoise-method $denoise_method \
     --unringing-method $unringing_method \
