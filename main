@@ -64,6 +64,11 @@ if [[ $inFSDIR != "null" ]] ; then
     #TODO - strip alphanumeric chars?
     cp -rH $inFSDIR $outdir/freesurfer/sub-$sub
     chmod -R +rw $outdir/freesurfer
+
+    #run reconall to get the fsaverage folder - 
+    #it should recognize though the folder just created
+    if $reconall == "false"; then
+        optional="$optional --do-reconall"
 fi
 
 # avoid templateflow problems on HPC's running singularity
@@ -73,11 +78,11 @@ export SINGULARITYENV_TEMPLATEFLOW_HOME=$PWD/templateflow
 # set FreeSurfer
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
-# check and flip bvecs if needed
-if [[ $check_flip_bvecs == "true" ]]; then 
-	echo "check if bvecs need to be flipped - flip them if necessary"
-	./check_and_flip_bvecs.sh
-fi
+# check and flip bvecs if needed (actually not needed since qsiprep should check it)
+#if [[ $check_flip_bvecs == "true" ]]; then 
+#	echo "check if bvecs need to be flipped - flip them if necessary"
+#	./check_and_flip_bvecs.sh
+#fi
 
 # QSIPrep
 time singularity exec -e \
