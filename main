@@ -45,7 +45,8 @@ fi
 [ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
 [ $infant == "true" ] && optional="$optional --infant"
 [ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc --force-syn"
-
+[ $reconall == "true" ] && optional="$optional --do-reconall"
+    
 # remove if stuff already exists
 rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
 rm -rf $outdir && mkdir -p $outdir
@@ -83,7 +84,6 @@ time singularity exec -e \
     docker://pennbbl/qsiprep:0.14.2 \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
-    --do-reconall \
     --output-resolution $resolution \
     --denoise-method $denoise_method \
     --unringing-method $unringing_method \
