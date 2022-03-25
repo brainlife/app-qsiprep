@@ -28,6 +28,7 @@ infant=$(jq -r .infant config.json)
 syn_sdc=$(jq -r .syn_sdc config.json)
 force_syn=$(jq -r .force_syn config.json) #keep to be back compatible
 check_flip_bvecs=$(jq -r .check_flip_bvecs config.json)
+reconall=$(jq -r .reconall config.json)
 
 optional=""
 
