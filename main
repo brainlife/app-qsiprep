@@ -68,6 +68,7 @@ time singularity exec -e \
     --denoise-method $denoise_method \
     --unringing-method $unringing_method \
     --hmc-transform $hmc_transform \
+    --do-reconall \
     --nthreads 8 \
     --verbose \
     --work-dir $WORKDIRNAME \
