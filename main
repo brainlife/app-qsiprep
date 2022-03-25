@@ -64,11 +64,11 @@ time singularity exec -e \
     docker://pennbbl/qsiprep:0.15.3 \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
+    --do_reconall \
     --output-resolution $resolution \
     --denoise-method $denoise_method \
     --unringing-method $unringing_method \
     --hmc-transform $hmc_transform \
-    --do-reconall \
     --nthreads 8 \
     --verbose \
     --work-dir $WORKDIRNAME \
