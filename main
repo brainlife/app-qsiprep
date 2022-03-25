@@ -50,6 +50,25 @@ fi
 rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
 rm -rf $outdir && mkdir -p $outdir
 
+# EXPERIMENTAL: try to use freesufer input
+inFSDIR=`jq -r '.fsin' config.json`
+
+if [[ $inFSDIR != "null" ]] ; then
+
+    #clean up previous freesurfer dir if it exists
+    rm -rf $outdir/freesurfer
+    mkdir -p $outdir/freesurfer
+
+    #TODO - strip alphanumeric chars?
+    sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
+    cp -rH $inFSDIR $outdir/freesurfer/sub-$sub
+    chmod -R +rw $outdir/freesurfer
+fi
+
+# avoid templateflow problems on HPC's running singularity
+mkdir -p templateflow
+export SINGULARITYENV_TEMPLATEFLOW_HOME=$PWD/templateflow
+
 # set FreeSurfer
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 
