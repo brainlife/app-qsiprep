@@ -74,14 +74,19 @@ mv output_report/qsiprep output_report/html
 
 # flip bvecs
 if [ $xflip == "true" ]; then
-    echo "flip bvecs-x to be compatible with MRtrix"
-    sed -i '$s/}/,\n"bvecs_out":".\/output_dwi\/dwi.bvecs"}/' config.json #input bvecs
-    singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
-    rm output_dwi/dwi.bvecs #input bvecs
-    cp dwi.bvecs output_dwi/dwi.bvecs #flipped bvecs
-    ##remove bvecs from config.json
-    #tmp=$(mktemp)
-    #jq '._inputs[1].meta.bvecs = ""' config.json > "$tmp" && mv "$tmp" config.json
+    echo "Save output bvecs in MRtrix-style"
+    #sed -i '$s/}/,\n"bvecs_out":".\/output_dwi\/dwi.bvecs"}/' config.json #input bvecs
+    #singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
+    #rm output_dwi/dwi.bvecs #input bvecs
+    #cp dwi.bvecs output_dwi/dwi.bvecs #flipped bvecs
+
+    # simpler version
+    grad=$outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.b
+    time singularity exec -e docker://brainlife/mrtrix3:3.0.3 \
+        mrconvert output_dwi/dwi.nii.gz -grad $grad output.mif \
+        -export_grad_fsl output_dwi/dwi.bvecs dwi.bvals -force
+    rm output.mif
+    rm dwi.bvals
 fi
 
 # copy confounds.tsv file to regressors directory
