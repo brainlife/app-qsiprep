@@ -92,3 +92,7 @@ fi
 # copy confounds.tsv file to regressors directory
 [ ! -d ./regressors ] && mkdir -p regressors
 [ ! -f ./regressors/regressors.tsv ] && cp $outsub/dwi/*_confounds.tsv ./regressors/regressors.tsv
+
+# copy dwiqc.json file to dwiqc directory
+[ ! -d ./dwiqc ] && mkdir -p dwiqc
+[ ! -f ./dwiqc/dwiqc.json ] && cp $outdir/dwiqc.json ./dwiqc/dwiqc.json
