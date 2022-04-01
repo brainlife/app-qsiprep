@@ -28,7 +28,7 @@ infant=$(jq -r .infant config.json)
 syn_sdc=$(jq -r .syn_sdc config.json)
 force_syn=$(jq -r .force_syn config.json) #keep to be back compatible
 check_flip_bvecs=$(jq -r .check_flip_bvecs config.json)
-reconall=$(jq -r .reconall config.json)
+#reconall=$(jq -r .reconall config.json)
 
 optional=""
 
@@ -46,31 +46,32 @@ fi
 [ $skipbidsvalidation == "true" ] && optional="$optional --skip-bids-validation"
 [ $infant == "true" ] && optional="$optional --infant"
 [ $syn_sdc == "true" ] && optional="$optional --use-syn-sdc --force-syn"
-[ $reconall == "true" ] && optional="$optional --do-reconall"
+#[ $reconall == "true" ] && optional="$optional --do-reconall"
     
 # remove if stuff already exists
 rm -rf $WORKDIRNAME && mkdir -p $WORKDIRNAME
 rm -rf $outdir && mkdir -p $outdir
 
-# EXPERIMENTAL: try to use freesufer input
-inFSDIR=`jq -r '.fsin' config.json`
+## EXPERIMENTAL: try to use freesufer input
+## removing the following since it's not used in the preprocessing workflow
+#inFSDIR=`jq -r '.fsin' config.json`
+#
+#if [[ $inFSDIR != "null" ]] ; then
+#
+#    #clean up previous freesurfer dir if it exists
+#    rm -rf $outdir/freesurfer
+#    mkdir -p $outdir/freesurfer
+#
+#    #TODO - strip alphanumeric chars?
+#    cp -rH $inFSDIR $outdir/freesurfer/sub-$sub
+#    chmod -R +rw $outdir/freesurfer
 
-if [[ $inFSDIR != "null" ]] ; then
-
-    #clean up previous freesurfer dir if it exists
-    rm -rf $outdir/freesurfer
-    mkdir -p $outdir/freesurfer
-
-    #TODO - strip alphanumeric chars?
-    cp -rH $inFSDIR $outdir/freesurfer/sub-$sub
-    chmod -R +rw $outdir/freesurfer
-
-    #run reconall to get the fsaverage folder - 
-    #it should recognize though the folder just created
-    if $reconall == "false"; then
-        optional="$optional --do-reconall"
-    fi
-fi
+#    #run reconall to get the fsaverage folder - 
+#    #it should recognize though the folder just created
+#    if $reconall == "false"; then
+#        optional="$optional --do-reconall"
+#    fi
+#fi
 
 # avoid templateflow problems on HPC's running singularity
 mkdir -p templateflow
