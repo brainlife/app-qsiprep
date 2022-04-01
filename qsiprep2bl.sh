@@ -19,6 +19,8 @@ space=$(jq -r .output_space config.json)
 xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
 ses=($ses)
+acq=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.acquisition' config.json)
+acq=($acq)
 
 # organize output
 mkdir -p output_anat_preproc
@@ -41,6 +43,10 @@ outfile="sub-${sub}"
 # if a session tag exists, append to outsub and outfile
 [ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
 [ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
+
+# if an acquisition tag exists, append to outsub and outfile
+[ "$acq" != "null" ] && outsub=$outsub/acq-${acq[0]}
+[ "$acq" != "null" ] && outfile=${outfile}_acq-${acq[0]}
 
 # copy the appropriate anatomy data, based on space input
 if [ $space == "T1w" ]; then
