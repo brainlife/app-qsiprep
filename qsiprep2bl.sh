@@ -19,6 +19,8 @@ space=$(jq -r .output_space config.json)
 xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
 ses=($ses)
+acq=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.acq' config.json)
+acq=($acq)
 
 # organize output
 mkdir -p output_anat_preproc
@@ -41,6 +43,9 @@ outfile="sub-${sub}"
 # if a session tag exists, append to outsub and outfile
 [ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
 [ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
+
+# if an acquisition tag exists, append to outfile
+[ "$acq" != "null" ] && outfile=${outfile}_acq-${acq[0]}
 
 # copy the appropriate anatomy data, based on space input
 if [ $space == "T1w" ]; then
@@ -92,3 +97,7 @@ fi
 # copy confounds.tsv file to regressors directory
 [ ! -d ./regressors ] && mkdir -p regressors
 [ ! -f ./regressors/regressors.tsv ] && cp $outsub/dwi/*_confounds.tsv ./regressors/regressors.tsv
+
+# copy dwiqc.json file to dwiqc directory
+[ ! -d ./dwiqc ] && mkdir -p dwiqc
+[ ! -f ./dwiqc/dwiqc.json ] && cp $outdir/dwiqc.json ./dwiqc/dwiqc.json
