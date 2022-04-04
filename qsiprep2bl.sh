@@ -19,7 +19,7 @@ space=$(jq -r .output_space config.json)
 xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
 ses=($ses)
-acq=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.acquisition' config.json)
+acq=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.acq' config.json)
 acq=($acq)
 
 # organize output
@@ -44,8 +44,7 @@ outfile="sub-${sub}"
 [ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
 [ "$ses" != "null" ] && outfile=${outfile}_ses-${ses[0]}
 
-# if an acquisition tag exists, append to outsub and outfile
-[ "$acq" != "null" ] && outsub=$outsub/acq-${acq[0]}
+# if an acquisition tag exists, append to outfile
 [ "$acq" != "null" ] && outfile=${outfile}_acq-${acq[0]}
 
 # copy the appropriate anatomy data, based on space input
