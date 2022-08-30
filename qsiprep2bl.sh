@@ -89,9 +89,8 @@ if [ $xflip == "true" ]; then
     grad=$outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.b
     time singularity exec -e docker://brainlife/mrtrix3:3.0.3 \
         mrconvert output_dwi/dwi.nii.gz -grad $grad output.mif \
-        -export_grad_fsl output_dwi/dwi.bvecs dwi.bvals -force
+        -export_grad_fsl output_dwi/dwi.bvecs output_dwi/dwi.bvals -force
     rm output.mif
-    rm dwi.bvals
 fi
 
 # copy confounds.tsv file to regressors directory
