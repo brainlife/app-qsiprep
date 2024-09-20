@@ -15,7 +15,6 @@ outstem=output
 
 # get basename for output
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
-space=$(jq -r .output_space config.json)
 xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
 ses=($ses)
@@ -48,15 +47,9 @@ outfile="sub-${sub}"
 [ "$acq" != "null" ] && outfile=${outfile}_acq-${acq[0]}
 
 # copy the appropriate anatomy data, based on space input
-if [ $space == "T1w" ]; then
-    cp $SRCDIR/sub-${sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-    cp $SRCDIR/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
-elif [ $space == "MNI152NLin2009cAsym" ]; then
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
-fi
+cp $SRCDIR/sub-${sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
+cp $SRCDIR/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz;
+cp $SRCDIR/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
 
 # copy dwi output to bl output dir
 cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
