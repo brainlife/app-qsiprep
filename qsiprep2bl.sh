@@ -49,19 +49,19 @@ outfile="sub-${sub}"
 
 # copy the appropriate anatomy data, based on space input
 if [ $space == "T1w" ]; then
-    cp $SRCDIR/sub-${sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-    cp $SRCDIR/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
+    cp $SRCDIR/sub-${sub}*_desc-preproc*_T1w.nii.gz output_anat_preproc/t1.nii.gz;
+    cp $SRCDIR/sub-${sub}*_dseg.nii.gz output_dseg/parc.nii.gz;
+    cp $SRCDIR/sub-${sub}*_desc-brain*_mask.nii.gz output_brainmask/mask.nii.gz;
 elif [ $space == "MNI152NLin2009cAsym" ]; then
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
+    cp $SRCDIR/sub-${sub}*_space-MNI152NLin2009cAsym*_desc-preproc*_T1w.nii.gz output_anat_preproc/t1.nii.gz;
+    cp $SRCDIR/sub-${sub}*_space-MNI152NLin2009cAsym*_dseg.nii.gz output_dseg/parc.nii.gz;
+    cp $SRCDIR/sub-${sub}*_space-MNI152NLin2009cAsym_desc-brain*_mask.nii.gz output_brainmask/mask.nii.gz;
 fi
 
 # copy dwi output to bl output dir
-cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
-cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
-cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
+cp $outsub/dwi/${outfile}*_space-T1w*_desc-preproc*_dwi.nii.gz output_dwi/dwi.nii.gz
+cp $outsub/dwi/${outfile}*_space-T1w*_desc-preproc*_dwi.bvec output_dwi/dwi.bvecs
+cp $outsub/dwi/${outfile}*_space-T1w*_desc-preproc*_dwi.bval output_dwi/dwi.bvals
 
 # copy over report html to output dir
 for html in $(cd $outstem && find -name "*.html"); do
