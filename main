@@ -14,8 +14,6 @@ WORKDIRNAME=$(pwd)/qsipworkdir
 outdir=$(pwd)/output
 
 resolution=$(jq -r .output_resolution config.json) 
-space=$(jq -r .output_space config.json) 
-template=$(jq -r .template config.json) 
 #sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
 dwi=$(jq -r .dwi config.json)
@@ -35,11 +33,6 @@ optional=""
 if [[ $dwi == *","* ]]; then 
 	echo "Multi dwi input found. Distortion group merge option: ${distortion_group_merge}"; 
 	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
-fi
-
-if [[ $space == "MNI152NLin2009cAsym" ]]; then 
-	echo "Sampling T1w, brain mask, and parcellation/volume to MNI152NLin2009cAsym space."; 
-	optional="$optional --template MNI152NLin2009cAsym";	
 fi
 
 # boolean options
@@ -88,7 +81,7 @@ export SINGULARITYENV_TEMPLATEFLOW_HOME=$PWD/templateflow
 
 # QSIPrep
 time singularity exec -e \
-    docker://pennbbl/qsiprep:0.14.2 \
+    docker://pennbbl/qsiprep:0.22.1 \
     /usr/local/miniconda/bin/qsiprep \
     --fs-license-file license.txt \
     --output-resolution $resolution \
