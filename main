@@ -13,6 +13,7 @@ bl2bids
 WORKDIRNAME=$(pwd)/qsipworkdir
 outdir=$(pwd)/output
 
+space=$(jq -r .output_space config.json)
 resolution=$(jq -r .output_resolution config.json) 
 #sub=$(jq -r '._inputs[] | select(.id == "t1w") | .meta.subject' config.json)
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
@@ -31,8 +32,17 @@ check_flip_bvecs=$(jq -r .check_flip_bvecs config.json)
 optional=""
 
 if [[ $dwi == *","* ]]; then 
-	echo "Multi dwi input found. Distortion group merge option: ${distortion_group_merge}"; 
-	optional="$optional --distortion-group-merge ${distortion_group_merge}";	
+    echo "Multi dwi input found. Distortion group merge option: ${distortion_group_merge}"; 
+    optional="$optional --distortion-group-merge ${distortion_group_merge}";    
+fi
+
+# Handling spatial normalization based on output_space
+if [[ $space == "MNI152NLin2009cAsym" ]]; then
+    echo "Performing normalization to MNI152NLin2009cAsym space."
+    optional="$optional --anatomical-template MNI152NLin2009cAsym"
+else
+    echo "Skipping normalization to template space, using T1w space."
+    optional="$optional --skip-anat-based-spatial-normalization"
 fi
 
 # boolean options
