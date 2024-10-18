@@ -49,13 +49,13 @@ outfile="sub-${sub}"
 
 # copy the appropriate anatomy data, based on space input
 if [ $space == "T1w" ]; then
-    cp $SRCDIR/sub-${sub}*_desc-preproc*_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-    cp $SRCDIR/sub-${sub}*_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}*_desc-brain*_mask.nii.gz output_brainmask/mask.nii.gz;
+    find $SRCDIR -type f -name "sub-${sub}*_desc-preproc*_T1w.nii.gz" ! -name "*_space-MNI152NLin2009cAsym*" -exec cp {} output_anat_preproc/t1.nii.gz \;
+    find $SRCDIR -type f -name "sub-${sub}*_dseg.nii.gz" ! -name "*_space-MNI152NLin2009cAsym*" -exec cp {} output_dseg/parc.nii.gz \;
+    find $SRCDIR -type f -name "sub-${sub}*_desc-brain*_mask.nii.gz" ! -name "*_space-MNI152NLin2009cAsym*" -exec cp {} output_brainmask/mask.nii.gz \;
 elif [ $space == "MNI152NLin2009cAsym" ]; then
     cp $SRCDIR/sub-${sub}*_space-MNI152NLin2009cAsym*_desc-preproc*_T1w.nii.gz output_anat_preproc/t1.nii.gz;
     cp $SRCDIR/sub-${sub}*_space-MNI152NLin2009cAsym*_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}*_space-MNI152NLin2009cAsym_desc-brain*_mask.nii.gz output_brainmask/mask.nii.gz;
+    cp $SRCDIR/sub-${sub}*_space-MNI152NLin2009cAsym*_desc-brain*_mask.nii.gz output_brainmask/mask.nii.gz;
 fi
 
 # copy dwi output to bl output dir
