@@ -92,7 +92,7 @@ export SINGULARITYENV_TEMPLATEFLOW_HOME=$PWD/templateflow
 # QSIPrep
 time singularity exec -e \
     docker://pennbbl/qsiprep:0.22.1 \
-    /usr/local/miniconda/bin/qsiprep \
+    qsiprep \
     --fs-license-file license.txt \
     --output-resolution $resolution \
     --denoise-method $denoise_method \
