@@ -61,9 +61,9 @@ elif [ $space == "MNI152NLin2009cAsym" ]; then
 fi
 
 # copy dwi output to bl output dir
-cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.nii.gz output_dwi/dwi.nii.gz
-cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.bvec output_dwi/dwi.bvecs
-cp $outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.bval output_dwi/dwi.bvals
+cp $outsub/dwi/${outfile}*_space-T1w*_desc-preproc*_dwi.nii.gz output_dwi/dwi.nii.gz
+cp $outsub/dwi/${outfile}*_space-T1w*_desc-preproc*_dwi.bvec output_dwi/dwi.bvecs
+cp $outsub/dwi/${outfile}*_space-T1w*_desc-preproc*_dwi.bval output_dwi/dwi.bvals
 
 # copy over report html to output dir
 for html in $(cd $outstem && find -name "*.html"); do
@@ -91,9 +91,8 @@ if [ $xflip == "true" ]; then
     grad=$outsub/dwi/${outfile}_space-T1w_desc-preproc_dwi.b
     time singularity exec -e docker://brainlife/mrtrix3:3.0.3 \
         mrconvert output_dwi/dwi.nii.gz -grad $grad output.mif \
-        -export_grad_fsl output_dwi/dwi.bvecs dwi.bvals -force
+        -export_grad_fsl output_dwi/dwi.bvecs output_dwi/dwi.bvals -force
     rm output.mif
-    rm dwi.bvals
 fi
 
 # copy confounds.tsv file to regressors directory
