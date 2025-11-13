@@ -15,6 +15,8 @@ outstem=output
 
 # get basename for output
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
+# making the subject names BIDS compliant
+sub_bids=$(sub//[^a-zA-Z0-9]/)
 space=$(jq -r .output_space config.json)
 xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
@@ -36,9 +38,9 @@ mkdir -p output_report
 # is the subject stem, and is used to make identifying the appropriate dwi
 # files easier
 outdir=$outstem/qsiprep
-outsub="$outdir/sub-${sub}"
+outsub="$outdir/sub-${sub_bids}"
 SRCDIR=$outsub/anat
-outfile="sub-${sub}"
+outfile="sub-${sub_bids}"
 
 # if a session tag exists, append to outsub and outfile
 [ "$ses" != "null" ] && outsub=$outsub/ses-${ses[0]}
@@ -49,13 +51,13 @@ outfile="sub-${sub}"
 
 # copy the appropriate anatomy data, based on space input
 if [ $space == "T1w" ]; then
-    cp $SRCDIR/sub-${sub}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-    cp $SRCDIR/sub-${sub}_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
+    cp $SRCDIR/sub-${sub_bids}_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
+    cp $SRCDIR/sub-${sub_bids}_dseg.nii.gz output_dseg/parc.nii.gz;
+    cp $SRCDIR/sub-${sub_bids}_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
 elif [ $space == "MNI152NLin2009cAsym" ]; then
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_dseg.nii.gz output_dseg/parc.nii.gz;
-    cp $SRCDIR/sub-${sub}_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
+    cp $SRCDIR/sub-${sub_bids}_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz output_anat_preproc/t1.nii.gz;
+    cp $SRCDIR/sub-${sub_bids}_space-MNI152NLin2009cAsym_dseg.nii.gz output_dseg/parc.nii.gz;
+    cp $SRCDIR/sub-${sub_bids}_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz output_brainmask/mask.nii.gz;
 fi
 
 # copy dwi output to bl output dir
