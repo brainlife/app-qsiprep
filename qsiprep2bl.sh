@@ -16,7 +16,7 @@ outstem=output
 # get basename for output
 sub=$(jq -r '._inputs[0].meta.subject' config.json)
 # making the subject names BIDS compliant
-sub_bids=$(sub//[^a-zA-Z0-9]/)
+sub_bids=${sub//[^a-zA-Z0-9]/}
 space=$(jq -r .output_space config.json)
 xflip=$(jq -r .xflip config.json)
 ses=$(jq -r '._inputs[] | select(.id == "dwi") | .meta.session' config.json)
