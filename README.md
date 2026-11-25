@@ -3,6 +3,52 @@
 
 # app-qsiprep
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+**Preprocesses DWI with QSIPrep 0.15.3 (denoising, head motion and eddy correction, susceptibility distortion correction, coregistration to the T1w) and outputs the preprocessed DWI, T1w, brain mask, tissue segmentation and HTML report.**
+
+Converts the inputs to BIDS and runs the QSIPrep preprocessing workflow only (no reconstruction), with denoising, unringing and head-motion transform as chosen, resampling the DWI to the requested isotropic resolution in T1w (ACPC) space. Use it as a complete diffusion preprocessing pipeline when you have a T1w image and one or two DWI runs; a second DWI must have the opposite phase-encoding direction, and fieldmaps are used when provided. Needs a FreeSurfer license (used by QSIPrep).
+
+Run it on brainlife.io: [https://doi.org/10.25663/brainlife.app.246](https://doi.org/10.25663/brainlife.app.246)
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `t1` | `neuro/anat/t1w` (!qsiprep) | yes | T1 anatomical image. |
+| `dwi` | `neuro/dwi` (!qsiprep, !preprocessed) | yes | DWI volume(s). If you input a second DWI, be sure that it has an opposite Phase Encoding Direction than the first DWI. At the moment, no more than 2 DWIs can be selected. |
+| `fmap` | `neuro/fmap` | no | fieldmap |
+
+| Output | Datatype | Description |
+|---|---|---|
+| `output_dwi` | `neuro/dwi` | Preprocessed DWI in T1w space with bvals and bvecs (FSL-style unless xflip is set). |
+| `output_anat_preproc` | `neuro/anat/t1w` | Preprocessed T1w image (in MNI152NLin2009cAsym space if selected). |
+| `output_dseg` | `neuro/parcellation/volume` | QSIPrep tissue segmentation (dseg) as a volume parcellation. |
+| `output_brainmask` | `neuro/mask` | Brain mask from the anatomical workflow. |
+| `output_report` | `report/html` | QSIPrep HTML report with figures. |
+| `regressors` | `neuro/regressors` | Per-volume confounds table (regressors.tsv) from QSIPrep. |
+| `dwiqc` | `raw` | raw directory containing dwi QC reports in dwiqc.json |
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `output_resolution` | number | `1.2` | The isotropic voxel size in mm the data will be resampled to after preprocessing. NOTE: only dwi data will be resampled. |
+| `output_space` | enum | `T1w` | Volume and surface spaces to resample dwis into. NOTE: If selecting T1w, the preprocessed T1w image defines the T1w space, not the native T1. Reconstructed surfaces will be registered to the T1w space (ACPC), and not to the input images. WARNING: If selecting template, dwis will be still resampled to the T1w space (and not to the template). Options: `T1w`, `MNI152NLin2009cAsym`. |
+| `skipbidsvalidation` | boolean | `false` | Skip the BIDS validation of input data. Try this option if your data is not BIDS compatible but you'd like to go ahead and process it through qsiprep anyway. |
+| `denoise_method` | enum | `dwidenoise` | Image-based denoising method. Options: `dwidenoise`, `patch2self`, `none`. |
+| `distortion_group_merge` | enum | `none` | How to combine images across distorted groups (only in case of multi dwi inputs). (at the moment only 'none' can be run). Options: `none`, `average`, `concat`. |
+| `unringing_method` | enum | `none` | Method for Gibbs-ringing removal. Options: `none`, `mrdegibbs`. |
+| `hmc_transform` | enum | `Affine` | Transformation to be optimized during head motion correction. Options: `Affine`, `Rigid`. |
+| `infant` | boolean | `false` | Configure pipelines to process infant brains. |
+| `syn_sdc` | boolean | `false` | EXPERIMENTAL: Use fieldmap-free distortion correction. |
+| `force_syn` | boolean | `false` | EXPERIMENTAL/TEMPORARY: Use SyN correction in addition to fieldmap correction, if available. |
+| `xflip` | boolean | `false` | Save output bvecs in MRtrix-style. If false (default), bvecs will be saved in FSL-style and will be compatible with DIPY and DSI Studio. |
+
+Runtime: container `pennbbl/qsiprep:0.15.3`; needs `FREESURFER_LICENSE`.
+
+Please cite:
+- Cieslak M. et al. QSIPrep: An integrative platform for preprocessing and reconstructing diffusion MRI. bioRxiv 2020.09.04.282269. [doi:10.1101/2020.09.04.282269](https://doi.org/10.1101/2020.09.04.282269)
+- Avesani P. et al. The open diffusion data derivatives. Sci Data 6, 69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
+
+<!-- brainlife-app:end -->
+
 This App runs [QSIPrep](https://github.com/pennbbl/qsiprep) on the [brainlife.io](https://brainlife.io/) interface. QSIPrep configures pipelines for processing diffusion-weighted MRI (dMRI) data. This App implements only the preprocessing piplines (and not the reconstruction pipelines). The preprocessing pipelines are built based on the available BIDS inputs, ensuring that fieldmaps are handled correctly. The preprocessing workflow performs head motion correction, susceptibility distortion correction, MP-PCA denoising, coregistration to T1w images, spatial normalization using ANTs and tissue segmentation.
 
 #### References and resources to consider
