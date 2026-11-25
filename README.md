@@ -10,7 +10,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="MIT license"></a>
 </p>
 
-## 🧠 At a glance
+## At a glance
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
@@ -20,13 +20,13 @@ Converts the inputs to BIDS and runs the QSIPrep preprocessing workflow only (no
 
 | | |
 |---|---|
-| 📥 **Inputs** | `neuro/anat/t1w` · `neuro/dwi` · `neuro/fmap` (optional) |
-| 📤 **Outputs** | `neuro/dwi` · `neuro/anat/t1w` · `neuro/parcellation/volume` · `neuro/mask` · `report/html` · `neuro/regressors` · `raw` |
-| 🐳 **Container** | `pennbbl/qsiprep:0.15.3` |
-| 🔑 **Requires** | `FREESURFER_LICENSE` |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.246](https://doi.org/10.25663/brainlife.app.246) |
+| **Inputs** | `neuro/anat/t1w` · `neuro/dwi` · `neuro/fmap` (optional) |
+| **Outputs** | `neuro/dwi` · `neuro/anat/t1w` · `neuro/parcellation/volume` · `neuro/mask` · `report/html` · `neuro/regressors` · `raw` |
+| **Container** | `pennbbl/qsiprep:0.15.3` |
+| **Requires** | `FREESURFER_LICENSE` |
+| **Run it** | [doi.org/10.25663/brainlife.app.246](https://doi.org/10.25663/brainlife.app.246) |
 
-#### 📥 Inputs
+#### Inputs
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
@@ -34,7 +34,7 @@ Converts the inputs to BIDS and runs the QSIPrep preprocessing workflow only (no
 | `dwi` | `neuro/dwi` (!qsiprep, !preprocessed) | yes | DWI volume(s). If you input a second DWI, be sure that it has an opposite Phase Encoding Direction than the first DWI. At the moment, no more than 2 DWIs can be selected. |
 | `fmap` | `neuro/fmap` | no | fieldmap |
 
-#### 📤 Outputs
+#### Outputs
 
 | Output | Datatype | Description |
 |---|---|---|
@@ -47,7 +47,7 @@ Converts the inputs to BIDS and runs the QSIPrep preprocessing workflow only (no
 | `dwiqc` | `raw` | raw directory containing dwi QC reports in dwiqc.json |
 
 <details>
-<summary><b>⚙️ Parameters</b> (11)</summary>
+<summary><b>Parameters</b> (11)</summary>
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -67,9 +67,9 @@ Converts the inputs to BIDS and runs the QSIPrep preprocessing workflow only (no
 
 <!-- brainlife-app:end -->
 
-## 🚀 Running the App
+## Running the App
 
-### ☁️ On brainlife.io
+### On brainlife.io
 
 Open the App at [doi.org/10.25663/brainlife.app.246](https://doi.org/10.25663/brainlife.app.246), choose a T1-weighted image, one or two DWI runs and, optionally, a fieldmap, set the options and press **Execute**.
 
@@ -89,11 +89,11 @@ Main options:
 - `syn_sdc` (experimental fieldmap-free distortion correction), `infant`, `skipbidsvalidation`;
 - `xflip`: save bvecs in MRtrix style; by default they are FSL style, compatible with DIPY and DSI Studio.
 
-### 💻 Locally
+### Locally
 
 `main` relies on brainlife.io's `bl2bids` to convert the inputs to BIDS, so outside brainlife.io it is usually simpler to run QSIPrep directly; see the [QSIPrep usage documentation](https://qsiprep.readthedocs.io/en/latest/usage.html). To run `main` itself you need [Singularity/Apptainer](https://apptainer.org/), [`jq`](https://jqlang.github.io/jq/), `bl2bids` and a [FreeSurfer license](https://surfer.nmr.mgh.harvard.edu/registration.html) (QSIPrep uses it), and a `config.json` like [`config.json.sample`](config.json.sample), with the input paths, the options above and the `_inputs` metadata brainlife.io writes. Check out the branch brainlife.io runs (`git checkout 0.15.3`) and run `./main`.
 
-## 📦 Outputs
+## Outputs
 
 ```text
 output_dwi/            dwi.nii.gz, dwi.bvals, dwi.bvecs: preprocessed DWI in T1w space
@@ -105,7 +105,7 @@ regressors/            regressors.tsv: per-volume confounds
 dwiqc/                 dwiqc.json: DWI QC metrics
 ```
 
-## 📚 Citing
+## Citing
 
 > [!TIP]
 > If you use this App in your work, please cite the App, the software it builds on and brainlife.io (below). GitHub's **Cite this repository** button gives the App citation in APA and BibTeX.
@@ -118,7 +118,7 @@ dwiqc/                 dwiqc.json: DWI QC metrics
 - Cieslak et al. QSIPrep: an integrative platform for preprocessing and reconstructing diffusion MRI data. *Nature Methods* 18:775-778 (2021). [doi:10.1038/s41592-021-01185-5](https://doi.org/10.1038/s41592-021-01185-5)
 - Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
 
-## 👥 Authors
+## Authors
 
 - Franco Pestilli (project director)
 - Giulia Bertò ([@giulia-berto](https://github.com/giulia-berto))
@@ -126,7 +126,7 @@ dwiqc/                 dwiqc.json: DWI QC metrics
 
 **Contributors:** Brad Caron, Ashley Stewart, Sangmin Yi, Anibal Sólon, Steven Meisler
 
-## 💰 Funding
+## Funding
 
 [![Wellcome-226486/Z/22/Z](https://img.shields.io/badge/Wellcome-226486%2FZ%2F22%2FZ-purple.svg)](https://wellcome.org/)
 [![NIH-NINDS-U24NS140384](https://img.shields.io/badge/NIH_NINDS-U24NS140384-green.svg)](https://reporter.nih.gov/project-details/11261037)
@@ -147,6 +147,6 @@ dwiqc/                 dwiqc.json: DWI QC metrics
 
 This material is based upon work supported by the National Science Foundation Graduate Research Fellowship under Grant No. 1342962. Any opinion, findings, and conclusions or recommendations expressed in this material are those of the authors(s) and do not necessarily reflect the views of the National Science Foundation.
 
-## ⚖️ License
+## License
 
 [MIT](LICENSE). QSIPrep itself is distributed under its own license.
